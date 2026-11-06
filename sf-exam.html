@@ -1721,6 +1721,12 @@ input[type="date"] {
     window.scrollTo(0, 0);
   }
   (async () => {
+    if (!document.querySelector('meta[name="viewport"]')) {
+      const m = document.createElement("meta");
+      m.name = "viewport";
+      m.content = "width=device-width, initial-scale=1, viewport-fit=cover";
+      document.head.appendChild(m);
+    }
     syncEx();
     try {
       navigator.storage?.persist?.();
