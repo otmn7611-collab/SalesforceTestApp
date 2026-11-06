@@ -1,0 +1,1728 @@
+<title>Salesforce試験対策</title>
+<meta name="claude:viewport-fit-sides" content="cover" />
+<style>
+  /* 雑誌の表紙風。白地・濃紺の文字・青のアクセントだけで、大きな見出しと余白で見せる。ダークモードなし。 */
+:root {
+  --bg: #fff;
+  --sf: #fff;
+  --tint: #f4f7fd;
+  --ink: #0f1b3d;
+  --mu: #4a5578;
+  --ac: #1d4ed8;
+  --pb: #1d4ed8;
+  --sky: #38bdf8;
+  --ok: #0f7a55;
+  --ng: #c0304a;
+  --wn: #9a6700;
+  --ln: #dbe3f4;
+  --grad: linear-gradient(90deg, #1d4ed8, #38bdf8);
+  --fb: Meiryo, "Hiragino Sans", "Noto Sans JP", sans-serif;
+  --fd: Meiryo, "Hiragino Sans", "Noto Sans JP", sans-serif;
+  color-scheme: light;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 15px/1.8 var(--fb);
+  -webkit-text-size-adjust: 100%;
+}
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0 0 auto;
+  height: env(safe-area-inset-top, 0px);
+  z-index: 10;
+  background: var(--bg);
+}
+main {
+  max-width: 720px;
+  margin: 0 auto;
+  padding-block: 0 56px;
+  padding-left: max(24px, env(safe-area-inset-left, 0px));
+  padding-right: max(24px, env(safe-area-inset-right, 0px));
+}
+h1 {
+  font: 800 42px/1.15 var(--fd);
+  margin: 0;
+  letter-spacing: 0.01em;
+  text-wrap: balance;
+}
+h2 {
+  font: 800 28px/1.25 var(--fd);
+  margin: 0;
+}
+h3 {
+  font: 800 15px/1.5 var(--fd);
+}
+p {
+  margin: 0;
+}
+/* 英字の小見出し */
+.eb {
+  display: block;
+  font: 800 11px/1.4 var(--fd);
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--ac);
+  margin: 0 0 10px;
+}
+.eb.g {
+  color: var(--mu);
+}
+/* 見出し下の短いグラデーション線（グラデーションはこの線とメインボタンだけ） */
+.rule {
+  display: block;
+  width: 96px;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--grad);
+  margin: 18px 0 20px;
+}
+/* 誌名ヘッダー */
+.mast {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  padding: 18px 0 12px;
+  border-bottom: 1px solid var(--ln);
+  font: 800 11px/1.4 var(--fd);
+  letter-spacing: 0.22em;
+  color: var(--mu);
+}
+.mast b {
+  color: var(--ink);
+  font-weight: 800;
+}
+.cover {
+  padding: 32px 0 4px;
+}
+/* 情報ボックス */
+.card {
+  background: var(--sf);
+  border: 1px solid var(--ln);
+  border-radius: 16px;
+  padding: 20px;
+  margin: 28px 0;
+}
+.card h2 {
+  font-size: 22px;
+  line-height: 1.35;
+}
+.sec {
+  margin: 44px 0 28px;
+}
+.sec[hidden] {
+  display: none;
+}
+.home-grid .col {
+  min-width: 0;
+}
+.home-grid .col > .card,
+.home-grid .col > .sec {
+  margin-block: 28px;
+}
+button {
+  font: inherit;
+  font-weight: 700;
+  min-height: 48px;
+  border-radius: 12px;
+  border: 1px solid var(--ln);
+  background: var(--sf);
+  color: var(--ink);
+  padding: 0 14px;
+  cursor: pointer;
+}
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 3px solid var(--ac);
+  outline-offset: 2px;
+}
+button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+button.p {
+  background: var(--ac);
+  color: #fff;
+  border-color: var(--ac);
+}
+/* メインボタン */
+button.go,
+#go {
+  display: block;
+  width: 100%;
+  height: 56px;
+  min-height: 56px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--grad);
+  color: #fff;
+  font-weight: 800;
+  font-size: 16px;
+  letter-spacing: 0.08em;
+  margin: 28px 0;
+}
+input,
+textarea,
+select {
+  font: inherit;
+  min-height: 44px;
+  width: 100%;
+  border: 1px solid var(--ln);
+  border-radius: 12px;
+  background: var(--bg);
+  color: var(--ink);
+  padding: 6px 12px;
+}
+input[type="checkbox"] {
+  accent-color: var(--ac);
+}
+label {
+  display: block;
+  font-size: 13px;
+  color: var(--mu);
+}
+.row {
+  display: flex;
+  gap: 8px;
+  margin: 10px 0;
+}
+.row > * {
+  flex: 1;
+  min-width: 0;
+}
+.row > button {
+  padding: 0 6px;
+  font-size: 14px;
+  line-height: 1.3;
+}
+.mu {
+  color: var(--mu);
+  font-size: 14px;
+  margin: 8px 0;
+}
+.opt {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 14px;
+  border: 1px solid var(--ln);
+  border-radius: 12px;
+  margin: 10px 0;
+  background: var(--sf);
+  cursor: pointer;
+}
+.opt b {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 1px solid var(--ln);
+  color: var(--ac);
+  display: grid;
+  place-items: center;
+  flex: none;
+  font: 800 13px var(--fd);
+}
+.opt span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.opt.sel {
+  border-color: var(--ac);
+  box-shadow: inset 0 0 0 1px var(--ac);
+}
+.opt.sel b {
+  background: var(--ac);
+  border-color: var(--ac);
+  color: #fff;
+}
+.opt.ok {
+  border-color: var(--ok);
+  box-shadow: inset 0 0 0 1px var(--ok);
+}
+.opt.ok b {
+  background: var(--ok);
+  border-color: var(--ok);
+  color: #fff;
+}
+.opt.ng {
+  border-color: var(--ng);
+}
+.bar {
+  position: relative;
+  height: 10px;
+  background: var(--ln);
+  border-radius: 5px;
+  overflow: hidden;
+}
+.bar i {
+  display: block;
+  height: 100%;
+  background: var(--ac);
+  width: 0;
+  border-radius: 3px;
+}
+.bar u {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--ink);
+}
+.top {
+  position: sticky;
+  top: env(safe-area-inset-top, 0px);
+  background: var(--bg);
+  padding: 12px 0;
+  border-bottom: 1px solid var(--ln);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  z-index: 2;
+  font: 800 15px var(--fd);
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(46px, 1fr));
+  gap: 6px;
+}
+.grid button {
+  min-height: 44px;
+  padding: 0;
+}
+.grid .dn {
+  background: var(--ac);
+  border-color: var(--ac);
+  color: #fff;
+}
+/* フラグ：右上の角に橙の三角。回答済み（青）でも未回答（白）でも見える */
+.grid .fl {
+  position: relative;
+  overflow: hidden;
+  border-color: #e08a00;
+  border-width: 2px;
+}
+.grid .fl::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  border-style: solid;
+  border-width: 0 16px 16px 0;
+  border-color: transparent #e08a00 transparent transparent;
+}
+.grid .fl:not(.dn) {
+  background: #fff4dc;
+}
+/* 数字の強調：数字は大きく、単位は小さく */
+.big {
+  font: 800 40px/1.1 var(--fd);
+  font-variant-numeric: tabular-nums;
+}
+.big small,
+.pc small {
+  font: 700 14px var(--fd);
+  margin-left: 3px;
+  color: var(--mu);
+}
+.ex {
+  background: var(--tint);
+  border-radius: 12px;
+  padding: 12px 14px;
+  font-size: 15px;
+  white-space: pre-wrap;
+}
+/* 表紙のバッジ */
+.bd {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 4px;
+}
+.bd p {
+  flex-basis: 100%;
+  font-size: 12px;
+  color: var(--mu);
+  margin-top: 6px;
+}
+.pill {
+  display: inline-block;
+  border: 1px solid var(--ac);
+  color: var(--ac);
+  border-radius: 99px;
+  padding: 0 12px;
+  font: 800 12px/24px var(--fd);
+}
+.dm {
+  margin: 18px 0;
+}
+.dm .hd {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 14px;
+  margin-bottom: 6px;
+}
+.dm .hd span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.dm .hd b {
+  font: 800 16px var(--fd);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.dm small.wt {
+  white-space: nowrap;
+  color: var(--mu);
+  font-size: 11px;
+  margin-left: 4px;
+}
+.dm small {
+  font: 400 12px var(--fb);
+  color: var(--mu);
+}
+input[type="date"] {
+  -webkit-appearance: none;
+  appearance: none;
+  display: block;
+  min-width: 0;
+  max-width: 100%;
+  width: 100%;
+  text-align: left;
+}
+.sub {
+  border: 1px solid var(--ln);
+  border-radius: 12px;
+  padding: 14px;
+  margin-top: 16px;
+}
+.sub h3 {
+  margin: 0 0 4px;
+}
+/* 目次風の一覧：青い番号、罫線で区切る、先頭の罫線だけ濃紺 */
+.toc {
+  counter-reset: n;
+}
+.gl {
+  font: 800 11px/1.4 var(--fd);
+  letter-spacing: 0.22em;
+  color: var(--mu);
+  margin: 24px 0 8px;
+}
+.mi {
+  border-top: 1px solid var(--ln);
+  counter-increment: n;
+}
+.toc .mi:first-of-type {
+  border-top: 1px solid var(--ink);
+}
+.mh {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 0;
+}
+.toc .mh::before {
+  content: counter(n, decimal-leading-zero);
+  flex: none;
+  width: 30px;
+  color: var(--ac);
+  font: 800 18px var(--fd);
+  font-variant-numeric: tabular-nums;
+}
+.mt {
+  flex: 1;
+  min-width: 0;
+}
+.mt b {
+  font: 800 15px/1.5 var(--fd);
+  display: block;
+}
+.mt small {
+  display: block;
+  color: var(--mu);
+  font-size: 12px;
+  line-height: 1.5;
+}
+.mh .pc {
+  flex: none;
+  font: 800 28px/1 var(--fd);
+  font-variant-numeric: tabular-nums;
+}
+.ma {
+  display: flex;
+  gap: 6px;
+  flex: none;
+}
+.ma button {
+  min-width: 72px;
+}
+.inf {
+  width: 32px;
+  height: 32px;
+  min-height: 32px;
+  padding: 0;
+  border-radius: 50%;
+  flex: none;
+  font: 800 14px var(--fd);
+  color: var(--mu);
+}
+.inf[aria-expanded="true"] {
+  background: var(--ac);
+  color: #fff;
+  border-color: var(--ac);
+}
+/* 開閉する領域（説明の「i」、問題データのアコーディオン）。閉じている間はキーボードの対象にしない。 */
+.if,
+.acc-b {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    grid-template-rows 0.25s ease,
+    opacity 0.25s ease,
+    visibility 0s linear 0.25s;
+}
+.if.on,
+.acc-b.on {
+  grid-template-rows: 1fr;
+  opacity: 1;
+  visibility: visible;
+  transition-delay: 0s;
+}
+.acc-b > div {
+  overflow: hidden;
+  min-height: 0;
+  padding: 2px;
+  margin: -2px;
+}
+.if > div {
+  overflow: hidden;
+  min-height: 0;
+}
+.if p {
+  margin: 0 0 12px;
+  padding: 12px 14px;
+  background: var(--tint);
+  border-radius: 12px;
+  font-size: 14px;
+  color: var(--mu);
+}
+@media (prefers-reduced-motion: reduce) {
+  .if,
+  .acc-b,
+  .chev {
+    transition: none;
+  }
+}
+/* アコーディオン（問題データ） */
+.acc-h {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: none;
+  text-align: left;
+  font: 800 22px/1.35 var(--fd);
+}
+.acc-h b {
+  flex: 1;
+  display: block;
+}
+.chev {
+  width: 10px;
+  height: 10px;
+  margin: 0 6px 4px 0;
+  border-right: 2.5px solid var(--mu);
+  border-bottom: 2.5px solid var(--mu);
+  transform: rotate(45deg);
+  transition: transform 0.25s ease;
+}
+.acc-h[aria-expanded="true"] .chev {
+  transform: rotate(-135deg) translate(-2px, -2px);
+}
+@media (hover: hover) {
+  button:not(:disabled):hover {
+    border-color: var(--ac);
+  }
+  button.p:not(:disabled):hover {
+    filter: brightness(1.1);
+  }
+  #go:not(:disabled):hover {
+    filter: brightness(1.06);
+  }
+}
+@media (max-width: 360px) {
+  h1 {
+    font-size: 38px;
+  }
+}
+.hero {
+  padding: 32px 0 4px;
+}
+.hero h1 {
+  font-size: 34px;
+}
+.hero h1::after {
+  content: "";
+  display: block;
+  width: 96px;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--grad);
+  margin: 16px 0 20px;
+}
+.hero p {
+  color: var(--mu);
+  margin-top: 6px;
+}
+@media (max-width: 480px) {
+  label > small.mu {
+    display: none;
+  }
+}
+
+</style>
+<main id="app"></main>
+<script>
+  "use strict";
+(() => {
+  // src/exams.ts
+  var DEFAULT_EXAMS = {
+    "Salesforce 認定 Platform アドミニストレーター": {
+      n: 60,
+      m: 105,
+      p: 65,
+      note: "合格ラインは日本語版65%（英語版68%）。Summer '25対応の公式ガイドです。",
+      d: [
+        ["Configuration and Setup", 15],
+        ["Object Manager and Lightning App Builder", 15],
+        ["Sales and Marketing Applications", 10],
+        ["Service and Support Applications", 10],
+        ["Productivity and Collaboration", 10],
+        ["Data and Analytics Management", 17],
+        ["Automation", 15],
+        ["Agentforce", 8]
+      ],
+      dj: {
+        "Configuration and Setup": "設定とセットアップ",
+        "Object Manager and Lightning App Builder": "オブジェクトマネージャーとLightningアプリケーションビルダー",
+        "Sales and Marketing Applications": "営業・マーケティングアプリケーション",
+        "Service and Support Applications": "サービス・サポートアプリケーション",
+        "Productivity and Collaboration": "生産性とコラボレーション",
+        "Data and Analytics Management": "データとアナリティクスの管理",
+        Automation: "自動化",
+        Agentforce: "Agentforce"
+      }
+    },
+    "Salesforce 認定 Platform アプリケーションビルダー": {
+      n: 60,
+      m: 105,
+      p: 73,
+      note: "Summer '26対応の公式ガイドです（合格ライン73%）。",
+      d: [
+        ["Salesforce Fundamentals", 18],
+        ["Data Modeling and Management", 20],
+        ["Business Logic and Process Automation", 32],
+        ["User Interface", 17],
+        ["App Deployment", 13]
+      ],
+      dj: {
+        "Salesforce Fundamentals": "Salesforceの基礎",
+        "Data Modeling and Management": "データモデリングと管理",
+        "Business Logic and Process Automation": "ビジネスロジックとプロセスの自動化",
+        "User Interface": "ユーザーインターフェース",
+        "App Deployment": "アプリケーションのデプロイ"
+      }
+    },
+    "Salesforce 認定 B2C Commerce デベロッパー": {
+      n: 60,
+      m: 105,
+      p: 65,
+      note: "Spring '23対応の公式ガイドです。",
+      d: [
+        ["B2C Commerce Setup", 11],
+        ["Work With a B2C Site", 12],
+        ["Data Management Using Business Manager Usage", 24],
+        ["Application Development", 53]
+      ],
+      dj: {
+        "B2C Commerce Setup": "B2C Commerceのセットアップ",
+        "Work With a B2C Site": "B2Cサイトの操作",
+        "Data Management Using Business Manager Usage": "Business Managerによるデータ管理",
+        "Application Development": "アプリケーション開発"
+      }
+    },
+    "Salesforce 認定 Platform デベロッパー": {
+      n: 60,
+      m: 105,
+      p: 68,
+      note: "Summer '25対応の公式ガイドです。",
+      d: [
+        ["Developer Fundamentals", 27],
+        ["Process Automation and Logic", 28],
+        ["User Interface", 25],
+        ["Testing, Debugging, and Deployment", 20]
+      ],
+      dj: {
+        "Developer Fundamentals": "デベロッパーの基礎",
+        "Process Automation and Logic": "プロセスの自動化とロジック",
+        "User Interface": "ユーザーインターフェース",
+        "Testing, Debugging, and Deployment": "テスト・デバッグ・デプロイ"
+      }
+    }
+  };
+  var JA = {};
+  var indexDomains = (exams) => {
+    JA = {};
+    for (const k in exams) Object.assign(JA, exams[k].dj || {});
+  };
+  var domJa = (name) => JA[name] || name;
+  var EXAM_ALIAS = {
+    Platformアドミニストレーター: "Salesforce 認定 Platform アドミニストレーター",
+    "Platform App Builder": "Salesforce 認定 Platform アプリケーションビルダー",
+    Platformデベロッパー: "Salesforce 認定 Platform デベロッパー"
+  };
+  var canonExam = (name) => EXAM_ALIAS[name] || name;
+
+  // src/util.ts
+  var $ = (selector) => document.querySelector(selector);
+  var HTML_ESCAPES = {
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;"
+  };
+  var esc = (s) => String(s).replace(/[&<>"]/g, (c) => HTML_ESCAPES[c]);
+  var fmt = (sec) => {
+    const s = Math.max(0, sec);
+    return String(Math.floor(s / 60)).padStart(2, "0") + ":" + String(s % 60).padStart(2, "0");
+  };
+  var L5 = "ABCDE";
+  var shuffled = (a) => a.slice().sort(() => Math.random() - 0.5);
+
+  // src/charts.ts
+  var dbars = (dm, p, all, w) => {
+    const known = all || [];
+    const domains = [...known, ...Object.keys(dm || {}).filter((d) => !known.includes(d))];
+    if (!domains.length) return '<p class="mu">まだデータがありません。</p>';
+    const ix = (d) => w && w[d] ? `<small class="wt">出題${w[d]}%</small> ` : "";
+    const line = (d) => {
+      const v = dm && dm[d];
+      if (!v || !v[1]) {
+        return `<div class="dm"><div class="hd"><span>${esc(domJa(d))} ${ix(d)}</span><b style="color:var(--mu)"><small>未回答</small></b></div><div class="bar"><u style="left:${p}%"></u></div></div>`;
+      }
+      const pc = v[0] / v[1] * 100;
+      const c = pc >= p ? "--ok" : pc >= p - 15 ? "--wn" : "--ng";
+      return `<div class="dm"><div class="hd"><span>${esc(domJa(d))} ${ix(d)}</span><b style="color:var(${c})">${Math.round(pc)}%<small> ${v[0]}/${v[1]}</small></b></div><div class="bar"><i style="width:${pc}%;background:var(${c})"></i><u style="left:${p}%"></u></div></div>`;
+    };
+    return domains.map(line).join("") + `<p class="mu">縦線は合格ライン（${p}%）。分野は、試験ガイドの順に並べています。</p>`;
+  };
+
+  // src/choices.ts
+  var KEEP_POSITION = /(上記のすべて|上記のいずれも|上記すべて|すべて正しい|いずれも(当てはまらない|正しくない)|どれも(当てはまらない|正しくない)|該当なし)/;
+  function remapLetters(text, perm) {
+    return text.replace(/(^|[^A-Za-z0-9])([A-E])(?![A-Za-z0-9])/g, (m, before, l) => {
+      const i = L5.indexOf(l);
+      return i < perm.length ? before + L5[perm[i]] : m;
+    });
+  }
+  function sortLetterRuns(text) {
+    return text.replace(
+      /(^|[^A-Za-z0-9])([A-E](?:[と、・][A-E])+)(?![A-Za-z0-9])/g,
+      (_m, before, run) => {
+        const letters = run.match(/[A-E]/g).sort();
+        const seps = run.match(/[と、・]/g);
+        return before + letters.map((l, i) => l + (seps[i] || "")).join("");
+      }
+    );
+  }
+  function permuteQuestion(q2, order) {
+    const perm = [];
+    order.forEach((oldPos, newPos) => perm[oldPos] = newPos);
+    return {
+      ...q2,
+      o: order.map((i) => q2.o[i]),
+      a: q2.a.map((i) => perm[i]).sort((x, y) => x - y),
+      e: sortLetterRuns(remapLetters(q2.e, perm)),
+      rd: 1
+    };
+  }
+  function shuffleChoices(q2) {
+    const all = q2.o.map((_, i) => i);
+    const free = all.filter((i) => !KEEP_POSITION.test(q2.o[i]));
+    const mixed = shuffled(free);
+    const order = all.slice();
+    free.forEach((pos, k) => order[pos] = mixed[k]);
+    return permuteQuestion(q2, order);
+  }
+  function randomizeAnswers(pool2) {
+    let n = 0;
+    for (const list2 of Object.values(pool2)) {
+      list2.forEach((q2, i) => {
+        if (!q2.rd) {
+          list2[i] = shuffleChoices(q2);
+          n++;
+        }
+      });
+    }
+    return n;
+  }
+
+  // src/codec.ts
+  var errMsg = (e) => e instanceof SyntaxError ? "JSONファイルとして読み取れませんでした。" : e && e.message || "読み込めませんでした。";
+
+  // src/app.ts
+  var STUDY = typeof claude === "undefined";
+  var HAVE = "登録済み";
+  var EX = {};
+  var EXPK = "sfexp";
+  var S = { pool: {}, hist: [], wr: {}, exd: {}, act: [], scn: 0, rnd: false };
+  var cur = "Salesforce 認定 Platform アドミニストレーター";
+  var R = null;
+  var Q = null;
+  var T;
+  var busy = false;
+  try {
+    const r = localStorage.getItem("sfq1");
+    if (r) S = JSON.parse(r);
+  } catch (e) {
+  }
+  S.pool = S.pool || {};
+  S.hist = S.hist || [];
+  S.wr = S.wr || {};
+  S.exd = S.exd || {};
+  S.exams = S.exams || {};
+  S.act = S.act || [];
+  S.scn = S.scn || 0;
+  S.rnd = !!S.rnd;
+  S.shuf = !!S.shuf;
+  function renameExams(d) {
+    const pool2 = {};
+    for (const k in d.pool || {}) (pool2[canonExam(k)] = pool2[canonExam(k)] || []).push(...d.pool[k]);
+    if (d.pool) d.pool = pool2;
+    (d.hist || []).forEach((h) => h.ex = canonExam(h.ex));
+    const exd = {};
+    for (const k in d.exd || {}) exd[canonExam(k)] = exd[canonExam(k)] || d.exd[k];
+    if (d.exd) d.exd = exd;
+  }
+  renameExams(S);
+  function syncEx() {
+    const ex = S.exams || (S.exams = {});
+    const used = /* @__PURE__ */ new Set([...Object.keys(S.pool), ...S.hist.map((h) => h.ex), ...Object.keys(S.exd)]);
+    const keys = !Object.keys(ex).length && !STUDY ? Object.keys(DEFAULT_EXAMS) : [...used];
+    keys.forEach((k) => {
+      if (!ex[k] && DEFAULT_EXAMS[k]) ex[k] = JSON.parse(JSON.stringify(DEFAULT_EXAMS[k]));
+    });
+    EX = ex;
+    indexDomains(EX);
+    if (!EX[cur]) cur = Object.keys(EX)[0] || cur;
+  }
+  var save = () => {
+    try {
+      localStorage.setItem("sfq1", JSON.stringify(S));
+    } catch (e) {
+    }
+  };
+  if (randomizeAnswers(S.pool)) save();
+  var present = (q2) => S.shuf ? shuffleChoices(q2) : q2;
+  var domainNames = (ex, dm = {}) => {
+    const def = ((EX[ex] || {}).d || []).map((x) => x[0]);
+    if (!def.length) return [...new Set((S.pool[ex] || []).map((x) => x.d))];
+    return [...new Set(def.concat(Object.keys(dm).filter((k) => dm[k] && dm[k][1] > 0)))];
+  };
+  var weightsOf = (ex) => Object.fromEntries(((EX[ex] || {}).d || []).map(([k, w]) => [k, w]));
+  var pool = () => S.pool[cur] || (S.pool[cur] = []);
+  var agg = (ex) => {
+    const dm = {};
+    let n = 0;
+    S.hist.forEach((h) => {
+      if (h.ex === ex && h.dom) {
+        n++;
+        for (const d in h.dom) {
+          const t = dm[d] || (dm[d] = [0, 0]);
+          t[0] += h.dom[d][0];
+          t[1] += h.dom[d][1];
+        }
+      }
+    });
+    return { dm, n };
+  };
+  function merge(d) {
+    if (!d || typeof d !== "object") return;
+    renameExams(d);
+    S.exams = S.exams || {};
+    for (const k in d.exams || {}) if (!S.exams[k]) S.exams[k] = d.exams[k];
+    for (const k in d.pool || {}) {
+      const p = S.pool[k] || (S.pool[k] = []);
+      (d.pool[k] || []).forEach((q2) => {
+        if (q2 && q2.q && !p.some((x) => x.q === q2.q)) p.push(q2);
+      });
+    }
+    (d.hist || []).forEach((h) => {
+      if (h && !S.hist.some((x) => x.t === h.t)) S.hist.push(h);
+    });
+    S.hist.sort((a, b) => a.t - b.t);
+    for (const k in d.wr || {}) S.wr[k] = Math.max(S.wr[k] || 0, d.wr[k]);
+    for (const k in d.exd || {}) if (!S.exd[k]) S.exd[k] = d.exd[k];
+    S.act = [...new Set(S.act.concat(d.act || []))].slice(-400);
+    S.scn = Math.max(S.scn || 0, d.scn || 0);
+    syncEx();
+  }
+  var pad2 = (n) => String(n).padStart(2, "0");
+  var stamp = (d = /* @__PURE__ */ new Date()) => `${d.getFullYear()}${pad2(d.getMonth() + 1)}${pad2(d.getDate())}-${pad2(d.getHours())}${pad2(d.getMinutes())}`;
+  async function saveJson(filename, text) {
+    let dl = null;
+    try {
+      dl = typeof claude !== "undefined" ? await claude.use("downloads") : null;
+    } catch (e) {
+    }
+    if (dl) {
+      try {
+        await dl.save({ filename, data: text });
+        return "ok";
+      } catch (e) {
+        return e?.code === "declined" ? "declined" : "fail";
+      }
+    }
+    try {
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(new Blob([text], { type: "application/json" }));
+      a.download = filename;
+      a.style.display = "none";
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => {
+        a.remove();
+        URL.revokeObjectURL(a.href);
+      }, 1e3);
+      return "ok";
+    } catch (e) {
+      return "fail";
+    }
+  }
+  var okD = (d) => d && typeof d === "object" && d.pool && typeof d.pool === "object";
+  var poolTotal = (d) => Object.values(d.pool || {}).reduce((sum, p) => sum + p.length, 0);
+  var lastK = "";
+  var oidc = 0;
+  var oid = (o) => o.__id || (o.__id = ++oidc);
+  var go = (k) => {
+    $("#app").classList.toggle("home", k === "home");
+    if (k !== lastK) {
+      lastK = k;
+      try {
+        window.scrollTo(0, 0);
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+      } catch (e) {
+      }
+    }
+  };
+  var qk = (x) => x.q.length + ":" + x.q.slice(0, 30);
+  var day = (t) => {
+    const d = new Date(t);
+    return d.getFullYear() * 1e4 + (d.getMonth() + 1) * 100 + d.getDate();
+  };
+  var touch = () => {
+    const d = day(Date.now());
+    if (!S.act.includes(d)) S.act.push(d);
+    S.act = S.act.slice(-400);
+    save();
+  };
+  var streak = () => {
+    const s = new Set(S.act.concat(S.hist.map((h) => day(h.t))));
+    let d = /* @__PURE__ */ new Date(), n = 0;
+    if (!s.has(day(d))) d.setDate(d.getDate() - 1);
+    while (s.has(day(d))) {
+      n++;
+      d.setDate(d.getDate() - 1);
+    }
+    return n;
+  };
+  var RK = [
+    [0, "見習い"],
+    [30, "ルーキー"],
+    [100, "レギュラー"],
+    [250, "エキスパート"],
+    [500, "マスター"],
+    [1e3, "レジェンド"]
+  ];
+  var addWr = (x) => {
+    S.wr[qk(x)] = (S.wr[qk(x)] || 0) + 1;
+  };
+  var clrWr = (x) => {
+    const k = qk(x);
+    if (S.wr[k] > 1) S.wr[k]--;
+    else delete S.wr[k];
+  };
+  function wkd(n) {
+    const g = agg(cur).dm, names = [...new Set(((EX[cur] || {}).d || []).map((x) => x[0]).concat(pool().map((x) => x.d)))];
+    const at = names.filter((d) => g[d] && g[d][1]).sort((a, b) => g[a][0] / g[a][1] - g[b][0] / g[b][1]);
+    return at.concat(names.filter((d) => !(g[d] && g[d][1]))).slice(0, n);
+  }
+  var getExd = () => S.exd[cur] !== void 0 ? S.exd[cur] : cur === "Salesforce 認定 Platform アドミニストレーター" ? "2026-11-14" : "";
+  function train() {
+    const P = pool();
+    if (!P.length) return;
+    const w = wkd(2), sc = (x) => S.wr[qk(x)] || 0;
+    let c = [];
+    w.forEach(
+      (d) => c.push(
+        ...P.filter((x) => x.d === d).sort((a, b) => sc(b) - sc(a) || Math.random() - 0.5).slice(0, 5)
+      )
+    );
+    if (c.length < 5)
+      c.push(
+        ...P.filter((x) => !c.includes(x)).sort((a, b) => sc(b) - sc(a) || Math.random() - 0.5).slice(0, 5 - c.length)
+      );
+    Q = {
+      qs: shuffled(c).slice(0, 10).map(present),
+      i: 0,
+      a: [],
+      sh: 0,
+      c: 0,
+      ex: cur,
+      dm: {}
+    };
+    qq();
+  }
+  function home() {
+    go("home");
+    clearInterval(T);
+    R = null;
+    Q = null;
+    let run = null;
+    try {
+      run = JSON.parse(localStorage.getItem(RUN) || "null");
+      if (!run || !Array.isArray(run.qs) || !run.qs.length) run = null;
+    } catch (e2) {
+      run = null;
+    }
+    const e = EX[cur] || { n: 60, m: 105, p: 65 };
+    if (dataOpen === null) dataOpen = !poolTotal(S);
+    $("#app").innerHTML = `<div class="mast"><b>SALESFORCE STUDY</b></div>
+ <header class="cover"><h1>Salesforce<br>試験対策</h1><i class="rule"></i><div class="bd" id="bd"></div></header>
+ ${run ? `<div class="card"><span class="eb">RESUME</span><h2>途中の模擬試験があります</h2><p class="mu">${esc(run.ex)}　回答済み ${run.ans.filter((a) => a.length).length} / ${run.qs.length}問　${run.m ? "残り " + fmt(run.left) : "経過 " + fmt(run.left)}</p><p class="mu" style="margin-top:4px">出題：${run.rnd ? "ランダム" : "登録順"}</p><div class="row"><button id="rd">破棄する</button><button class="p" id="rz">続きから再開</button></div></div>` : ""}
+ <div class="home-grid"><div class="col">
+ <section class="sec" id="td"></section>
+ <div class="card"><span class="eb">SETTINGS</span><h2>試験名</h2><label><select id="xn" aria-label="試験名">${(Object.keys(
+      EX
+    ).length ? Object.keys(EX) : ["（問題パックを読み込んでください）"]).map((k) => `<option ${k === cur ? "selected" : ""}>${esc(k)}</option>`).join("")}</select></label><p class="mu" id="nt"></p>
+ <div class="row"><label>問題数<input id="xq" type="number" min="1" value="${e.n}"></label><label>時間（分）<input id="xm" type="number" min="1" value="${e.m}"></label><label>合格（%）<input id="xp" type="number" min="1" max="100" value="${e.p}"></label></div>
+ <label style="display:flex;align-items:center;gap:10px;margin-top:12px;font-size:15px"><input type="checkbox" id="xr" ${S.rnd ? "checked" : ""} style="width:22px;height:22px;min-height:0;margin:0;flex:none">ランダムに出題する<small class="mu" style="margin-left:auto">オフ＝ファイルの順</small></label>
+ <label style="display:flex;align-items:center;gap:10px;margin-top:8px;font-size:15px"><input type="checkbox" id="xs" ${S.shuf ? "checked" : ""} style="width:22px;height:22px;min-height:0;margin:0;flex:none">選択肢の順番もランダムにする<small class="mu" style="margin-left:auto">毎回変わる</small></label>
+ <label style="display:flex;align-items:center;gap:10px;margin-top:8px;font-size:15px"><input type="checkbox" id="xu" ${S.nolim ? "checked" : ""} style="width:22px;height:22px;min-height:0;margin:0;flex:none">制限時間なし<small class="mu" style="margin-left:auto">経過時間だけ計る</small></label>
+<p class="mu" id="pc" style="margin:14px 0 0"></p><div class="bar" style="margin:6px 0 0"><i id="gp"></i></div>
+ </div>
+ <button class="go" id="go" disabled>模擬試験を始める</button>
+ </div><div class="col">
+ <section class="sec"><span class="eb">CONTENTS</span><h2>学習メニュー</h2><i class="rule"></i><div class="toc"><p class="gl">問題を解く</p><div class="mi"><div class="mh"><div class="mt"><b>一問一答</b><small id="qm"></small></div><div class="ma"><input id="qc" type="number" min="1" value="1" aria-label="出題数" style="width:64px"><button class="p" id="qs">始める</button></div><button class="inf" data-i="q" aria-label="一問一答の説明" aria-expanded="false">i</button></div><div class="if" id="in-q"><div><p>作成済みの問題からランダムに出題します。1問ごとに答え合わせと解説が出ます。出題数の上限は、作成済みの問題数です。</p></div></div></div><p class="gl">苦手分野</p><div class="mi"><div class="mh"><div class="mt"><b>対策問題を解く</b><small>弱点から最大10問</small></div><div class="ma"><button class="p" id="tr">始める</button></div><button class="inf" data-i="tr" aria-label="対策問題を解くの説明" aria-expanded="false">i</button></div><div class="if" id="in-tr"><div><p>作成済みの問題から、正答率が低い分野の問題と、過去に間違えた問題を優先して、最大10問を出します。</p></div></div></div></div></section>
+ <section class="sec" id="st"></section>
+  <section class="sec"><span class="eb">RECORDS</span><h2>成績</h2><i class="rule"></i>${S.hist.length ? `<div class="toc">${S.hist.slice(-5).reverse().map(
+      (h) => `<div class="mi"><div class="mh"><div class="mt"><b>${esc(h.ex)}</b><small>${new Date(h.t).toLocaleDateString("ja-JP")}　${h.cor}/${h.tot}問　${h.k === "q" ? "一問一答" : (h.pass ? "合格" : "不合格") + "　" + fmt(h.sec)}</small></div><b class="pc">${h.pct}<small>%</small></b></div></div>`
+    ).join("")}</div>` : '<p class="mu">まだ記録がありません。</p>'}<div class="row" id="rs"></div>
+  <p class="mu" id="xt"></p><div class="row"><button id="xo">成績を書き出す</button><button id="xi">成績を読み込む</button></div><input type="file" id="xf" accept="application/json,.json" hidden><p class="mu" id="xm2"></p></section>
+  <section class="sec admin"><span class="eb">ADMIN</span><button class="acc-h" id="acc" aria-expanded="${dataOpen}" aria-controls="acc-b"><b>設定</b><span class="chev" aria-hidden="true"></span></button><p class="mu" style="margin:0">問題パックの保存・読み込み${STUDY ? "" : "と、問題の作成"}です。</p>
+ <div class="acc-b ${dataOpen ? "on" : ""}" id="acc-b"><div>
+ <div class="sub"><div class="mh" style="padding:0"><h3 style="flex:1;margin:0">問題パック</h3><button class="inf" data-i="dr" aria-label="問題パックの説明" aria-expanded="false">i</button></div><div class="if" id="in-dr"><div><p>問題パックは、問題と試験の定義だけを入れたJSONファイルです。家族や友だちに渡すときは、このファイルをAirDropやLINE、メールなどで送ってください。成績は入りません。「保存」で、いま選んでいる試験の問題をファイルにします（iPhoneは「ファイル」アプリの好きな場所、PCは好きなフォルダに保存できます）。「読み込む」で、もらったファイルの問題を追加します（同じ問題は重複しません）。成績は別に、ページ下の「成績を書き出す」で保存します。</p></div></div>
+ <div class="row"><button id="pk">パックを読み込む</button><button id="pks">パックを保存</button></div><input type="file" id="pkf" accept="application/json,.json" hidden><div id="pl"></div></div>
+ ${STUDY ? "" : `<button class="p" id="gb" style="width:100%;margin-top:14px">問題を作成する（AI）</button><div id="gc"></div>`}
+ <p class="mu" id="gm"></p><p class="mu" id="sk" style="margin:10px 0 0"></p></div></div></section>
+ </div></div>`;
+    {
+      const k = $("#sk");
+      if (k) {
+        const ok2 = storeOk();
+        k.textContent = ok2 ? "この端末への保存：使えます（iPhoneは、ホーム画面に追加すると消えにくくなります）" : "この端末への保存：使えません（問題と途中経過は、ページを閉じると消えます）";
+        k.style.color = ok2 ? "" : "var(--ng)";
+      }
+    }
+    const st = () => {
+      const el = $("#st");
+      if (!el) return;
+      if (!pool().length) {
+        el.hidden = true;
+        return;
+      }
+      el.hidden = false;
+      const g = agg(cur), p = (EX[cur] || {}).p || 65, nm = domainNames(cur, g.dm);
+      el.innerHTML = `<span class="eb">PROGRESS</span><h2>分野ごとの<br>正答率</h2><i class="rule"></i><p class="mu">「${esc(cur)}」の模擬試験と一問一答の累計です（${g.n}回分）。</p>${dbars(g.dm, p, nm, weightsOf(cur))}`;
+    };
+    const bd = () => {
+      const s = streak(), n = S.hist.reduce((a, h) => a + (h.tot || 0), 0) + (S.scn || 0);
+      let r = 0;
+      RK.forEach((k, i) => {
+        if (n >= k[0]) r = i;
+      });
+      const nx = RK[r + 1];
+      const ms = Object.entries(agg(cur).dm).filter(([, v]) => v[1] >= 10 && v[0] / v[1] >= 0.8).map(
+        ([d]) => d.split(/\s+/).filter((x) => !/^(and|of|the)$/i.test(x)).slice(0, 2).join(" ") + " マスター"
+      );
+      $("#bd").innerHTML = `<span class="pill">連続 ${s}日</span><span class="pill">${RK[r][1]}</span>${ms.map((m) => `<span class="pill">${esc(m)}</span>`).join("")}<p style="margin:4px 0 0;font-size:12px">${nx ? `次の称号「${nx[1]}」まであと${nx[0] - n}問` : "最高の称号に到達しました"}</p>`;
+    };
+    const td = () => {
+      const el = $("#td"), exd = getExd(), P = pool().length, days = exd ? Math.ceil(
+        ((/* @__PURE__ */ new Date(exd + "T00:00:00")).getTime() - new Date((/* @__PURE__ */ new Date()).toDateString()).getTime()) / 864e5
+      ) : null, w = wkd(2);
+      el.innerHTML = `<span class="eb">COUNTDOWN</span><h2>受験日まで</h2><i class="rule"></i><div class="row" style="align-items:end"><div class="big">${days === null ? "—" : days < 0 ? "終了" : days === 0 ? "今日" : days + "<small>日</small>"}</div><label>受験日<input id="ed" type="date" value="${esc(exd)}"></label></div>
+  <p class="mu">${!P ? STUDY ? "問題パックを読み込むと、受験日までの目安が出ます。" : "問題を作成すると、受験日までの目安が出ます。" : days > 0 ? `${HAVE}の${P}問を受験日までに一周するには、1日約${Math.min(60, Math.max(5, Math.ceil(P / days)))}問が目安です。` : ""}</p>
+`;
+      $("#ed").onchange = () => {
+        S.exd[cur] = $("#ed").value;
+        save();
+        td();
+      };
+    };
+    const dash = () => {
+      td();
+      st();
+      bd();
+      const P = pool().length;
+      $("#tr").disabled = !P || busy;
+    };
+    const up = () => {
+      if (EX[$("#xn").value]) cur = $("#xn").value;
+      const k = EX[cur];
+      if (k) {
+        $("#xq").value = k.n;
+        $("#xm").value = k.m;
+        $("#xp").value = k.p;
+      }
+      $("#nt").textContent = k ? (k.note || "") + " 数値はSalesforce公式の試験ガイドに基づきます（2026年11月確認）。改訂されることがあるので、受験前に公式で確認してください。" : "この試験の定義がありません。";
+      upd();
+    };
+    const upd = () => {
+      const n = +$("#xq").value || 0, h = pool().length;
+      $("#pc").textContent = h > n ? `${HAVE} ${h}問（必要な${n}問はそろっています。模擬試験ではこの中から${n}問を出題します）` : `問題 ${h} / ${n}問（不足分は、ページ下の「設定」で${STUDY ? "パックを読み込めます" : "読み込み・作成できます"}）`;
+      if (!busy) $("#gp").style.width = Math.min(100, n ? h / n * 100 : 0) + "%";
+      $("#go").disabled = h < n;
+      if (!STUDY) $("#gb").disabled = busy || h >= n;
+      if (h >= n && !busy) $("#gm").textContent = "問題がそろいました。試験を始められます。";
+      $("#qm").textContent = `${HAVE}${h}問からランダム`;
+      $("#qc").max = h;
+      if (!+$("#qc").value || +$("#qc").value > h) $("#qc").value = h;
+      $("#qs").disabled = !h;
+      dash();
+    };
+    window.upd = upd;
+    const rb = (c) => {
+      const r = $("#rs");
+      if (!S.hist.length) {
+        r.innerHTML = "";
+        return;
+      }
+      r.innerHTML = c ? `<button id="r1" style="color:var(--ng);border-color:var(--ng)">本当にリセットする</button><button id="r0">やめる</button>` : `<button id="r2">成績をリセット</button>`;
+      if (c) {
+        $("#r0").onclick = () => rb(0);
+        $("#r1").onclick = () => {
+          S.hist = [];
+          S.act = [];
+          S.scn = 0;
+          save();
+          home();
+        };
+      } else $("#r2").onclick = () => rb(1);
+    };
+    rb(0);
+    const lastEx = Number(localStorage.getItem(EXPK) || 0);
+    $("#xt").textContent = lastEx ? `成績はこの端末に保存されています。最後に書き出した日：${new Date(lastEx).toLocaleDateString("ja-JP")}` : "成績はこの端末に保存されています。端末の変更やデータ消去に備えて、ときどき書き出してください。";
+    const importProgress = (text) => {
+      try {
+        const d = JSON.parse(text);
+        if (!d || d.kind !== "sf-progress") throw new Error("成績の書き出しファイルではありません。");
+        merge(d);
+        save();
+        home();
+      } catch (e2) {
+        $("#xm2").textContent = errMsg(e2);
+      }
+    };
+    const noteExported = () => {
+      try {
+        localStorage.setItem(EXPK, String(Date.now()));
+      } catch (e2) {
+      }
+      $("#xt").textContent = `成績はこの端末に保存されています。最後に書き出した日：${(/* @__PURE__ */ new Date()).toLocaleDateString("ja-JP")}`;
+    };
+    $("#xo").onclick = async () => {
+      const { hist, wr, exd, act, scn, rnd, shuf } = S;
+      const text = JSON.stringify({
+        kind: "sf-progress",
+        schema: 1,
+        hist,
+        wr,
+        exd,
+        act,
+        scn,
+        rnd,
+        shuf
+      });
+      $("#xm2").textContent = "";
+      const r = await saveJson(`sf-progress_${stamp()}.json`, text);
+      if (r === "ok") noteExported();
+      $("#xm2").textContent = r === "ok" ? "書き出しました。" : r === "declined" ? "書き出しをやめました。" : "保存できませんでした。もう一度お試しください。";
+    };
+    $("#xi").onclick = () => $("#xf").click();
+    $("#xf").onchange = async (ev) => {
+      const f = ev.target.files[0];
+      if (f) importProgress(await f.text());
+    };
+    $("#xn").onchange = up;
+    $("#xq").oninput = upd;
+    up();
+    $("#xs").onchange = (e2) => {
+      S.shuf = e2.target.checked;
+      save();
+    };
+    $("#xu").onchange = (e2) => {
+      S.nolim = e2.target.checked;
+      $("#xm").disabled = S.nolim;
+      save();
+    };
+    $("#xm").disabled = !!S.nolim;
+    $("#xr").onchange = (e2) => {
+      S.rnd = e2.target.checked;
+      save();
+    };
+    $("#go").onclick = () => start(+$("#xq").value, S.nolim ? 0 : +$("#xm").value, +$("#xp").value);
+    if (!STUDY) {
+      $("#acc").onclick = () => {
+        dataOpen = !dataOpen;
+        $("#acc").setAttribute("aria-expanded", String(dataOpen));
+        $("#acc-b").classList.toggle("on", dataOpen);
+      };
+      $("#gb").onclick = () => {
+        if (busy) return;
+        const N = Math.max(0, (+$("#xq").value || 0) - pool().length);
+        if (!N) return;
+        askC(
+          "gc",
+          `あと${N}問を作成します。よろしいですか？`,
+          `AIを使うため、Claudeの利用枠を消費します（10問ずつ、${Math.ceil(N / 10)}回）。`,
+          gen
+        );
+      };
+    }
+    $("#qs").onclick = () => startQ(+$("#qc").value);
+    document.querySelectorAll(".inf").forEach(
+      (b) => b.onclick = () => {
+        const q2 = $("#in-" + b.dataset.i);
+        q2.classList.toggle("on");
+        b.setAttribute("aria-expanded", q2.classList.contains("on"));
+      }
+    );
+    if (run) {
+      $("#rz").onclick = () => resume(run);
+      $("#rd").onclick = () => {
+        try {
+          localStorage.removeItem(RUN);
+        } catch (e2) {
+        }
+        home();
+      };
+    }
+    $("#tr").onclick = train;
+    packUi();
+    $("#pks").onclick = makePack;
+  }
+  var PACKF = "sf-pack";
+  var packMsg = "";
+  function importPack(d) {
+    if (!okD(d)) throw new Error("問題パックの形式ではありません。");
+    const before = poolTotal(S);
+    merge({ pool: d.pool, exams: {} });
+    for (const k in d.exams || {}) S.exams[canonExam(k)] = d.exams[k];
+    syncEx();
+    randomizeAnswers(S.pool);
+    const first = Object.keys(d.pool).map(canonExam).find((k) => EX[k] && (S.pool[k] || []).length);
+    if (first) cur = first;
+    save();
+    return poolTotal(S) - before;
+  }
+  function packUi() {
+    const done = (n) => {
+      packMsg = n ? `${n}問を追加しました。` : "新しい問題はありませんでした（すべて読み込み済みです）。";
+      home();
+    };
+    const fail = (e) => $("#gm").textContent = errMsg(e);
+    $("#gm").textContent = packMsg;
+    $("#pk").onclick = () => $("#pkf").click();
+    $("#pkf").onchange = async (ev) => {
+      const f = ev.target.files[0];
+      if (!f) return;
+      try {
+        done(importPack(JSON.parse(await f.text())));
+      } catch (e) {
+        fail(e);
+      }
+    };
+    fetch("packs/index.json").then((r) => r.ok ? r.json() : null).then((list2) => {
+      if (!Array.isArray(list2) || !list2.length || !$("#pl")) return;
+      list2 = list2.filter((x) => x && /^[^/\\]+\.json$/.test(String(x.file)));
+      $("#pl").innerHTML = '<p class="gl">配布中のパック</p>' + list2.map(
+        (x, i) => `<div class="mi"><div class="mh"><div class="mt"><b>${esc(x.title)}</b><small>${esc(x.exam || "")}${x.count ? "　" + x.count + "問" : ""}</small></div><button class="pf" data-i="${i}">読み込む</button></div></div>`
+      ).join("");
+      document.querySelectorAll("#pl .pf").forEach(
+        (b) => b.onclick = async () => {
+          try {
+            const r = await fetch("packs/" + encodeURIComponent(list2[+b.dataset.i].file));
+            if (!r.ok) throw new Error("パックを取得できませんでした。");
+            done(importPack(await r.json()));
+          } catch (e) {
+            fail(e);
+          }
+        }
+      );
+    }).catch(() => {
+    });
+  }
+  async function makePack() {
+    const P = pool();
+    const out = $("#gm");
+    if (!P.length) {
+      out.textContent = "この試験の問題がまだありません。";
+      return;
+    }
+    const text = JSON.stringify(
+      { kind: PACKF, schema: 1, exams: { [cur]: EX[cur] }, pool: { [cur]: P } },
+      (k, v) => k.startsWith("__") ? void 0 : v
+    );
+    const r = await saveJson(
+      `${cur.replace(/[\\/:*?"<>|]/g, "")}_${P.length}問_${stamp()}.json`,
+      text
+    );
+    out.textContent = r === "ok" ? `問題パック（${P.length}問）を保存しました。成績は含まれません。` : r === "declined" ? "保存をやめました。" : "保存できませんでした。もう一度お試しください。";
+  }
+  function domainPlan(exam, N) {
+    if (!exam || !exam.d) return Array(N).fill("全般");
+    const total = exam.d.reduce((sum, [, w]) => sum + w, 0);
+    const rows = exam.d.map(([name, w]) => {
+      const x = N * w / total;
+      return { name, n: Math.floor(x), frac: x - Math.floor(x) };
+    });
+    const left = N - rows.reduce((sum, r) => sum + r.n, 0);
+    rows.slice().sort((a, b) => b.frac - a.frac).slice(0, left).forEach((r) => r.n++);
+    return shuffled(rows.flatMap((r) => Array(r.n).fill(r.name)));
+  }
+  var dataOpen = null;
+  var genId = 0;
+  function cancelGen(mid) {
+    if (!busy) return;
+    genId++;
+    busy = false;
+    const m = $("#" + mid);
+    if (m) m.textContent = `中止しました。作成済みの問題は${pool().length}問です。`;
+    ["gc"].forEach((i) => {
+      const c = $("#" + i);
+      if (c) c.innerHTML = "";
+    });
+    if (window.upd && $("#xq")) window.upd();
+    const a = $("#tr");
+    if (a) a.disabled = !pool().length;
+  }
+  function askC(id, msg, sub, yes) {
+    const el = $("#" + id);
+    el.innerHTML = `<div class="sub"><p style="margin:0 0 6px"><b>${msg}</b></p><p class="mu" style="margin:0 0 8px">${sub}</p><div class="row"><button id="${id}n">いいえ</button><button class="p" id="${id}y">はい</button></div></div>`;
+    $("#" + id + "n").onclick = () => {
+      el.innerHTML = "";
+    };
+    $("#" + id + "y").onclick = () => {
+      el.innerHTML = "";
+      yes();
+    };
+  }
+  async function gen() {
+    if (busy) return;
+    const N = Math.max(0, (+$("#xq").value || 0) - pool().length);
+    if (!N) return;
+    let sm = null;
+    try {
+      sm = await claude.use("sample");
+    } catch (e) {
+    }
+    if (!sm) {
+      $("#gm").textContent = "この環境では問題を作成できません。";
+      return;
+    }
+    busy = true;
+    const my = ++genId;
+    $("#gb").disabled = true;
+    $("#gc").innerHTML = '<button id="gx" style="width:100%;margin-top:8px">中止する</button>';
+    $("#gx").onclick = () => cancelGen("gm");
+    const doms = domainPlan(EX[cur], N);
+    let done = 0, added = 0;
+    try {
+      for (let i = 0; i < N; i += 10) {
+        if (my !== genId) break;
+        const ds = doms.slice(i, i + 10);
+        $("#gm").textContent = `作成中… ${done}/${N}問`;
+        const v = await sm.json(
+          `Salesforce認定「${cur}」試験の練習問題を日本語でちょうど${ds.length}問作成してください。各問の分野は順に：${ds.join("、")}。公式の出題範囲と最新機能に沿ったオリジナル問題とし、実在の試験問題は再現しないこと。実務シナリオ形式を多めに。約8割は単一選択、残りは複数選択（2つまたは3つ選択）。選択肢は4〜5個で、紛らわしい誤答を含める。正解の位置は問題ごとにランダムにし、先頭に偏らせない。複数選択の問題文末尾には（2つ選択）のように明記する。解説には正解の理由と、各誤答がなぜ違うのかを簡潔に書く。解説で選択肢を指すときは、画面の表示どおり「A」「B」「C」のように英字で書き（Aが先頭の選択肢）、0・1・2などの数字は使わない。JSON配列のみを返す。各要素：{"d":分野名,"q":問題文,"o":[選択肢の文字列],"a":[正解の添字（0始まり）],"e":解説}`,
+          { modelTier: "default", cache: false }
+        );
+        if (my !== genId) {
+          return;
+        }
+        (Array.isArray(v) ? v : []).forEach((q2) => {
+          if (q2 && typeof q2.q === "string" && Array.isArray(q2.o) && q2.o.length >= 3 && Array.isArray(q2.a) && q2.a.length && q2.a.every((n) => Number.isInteger(n) && n >= 0 && n < q2.o.length) && !pool().some((x) => x.q === q2.q)) {
+            pool().push(
+              shuffleChoices({
+                d: q2.d || "全般",
+                q: q2.q,
+                o: q2.o.map(String),
+                a: q2.a,
+                e: String(q2.e || "")
+              })
+            );
+            added++;
+          }
+        });
+        done += ds.length;
+        save();
+        $("#gp").style.width = Math.min(100, done / N * 100) + "%";
+        window.upd();
+      }
+      $("#gm").textContent = `${added}問を追加しました。${pool().length < +$("#xq").value ? "不足があるため、もう一度押してください。" : ""}`;
+    } catch (err) {
+      if (my !== genId) {
+        return;
+      }
+      $("#gm").textContent = `作成を中断しました（${added}問追加済み）：${err && err.code === "rate_limited" ? "利用上限に達しました。時間をおいて再開してください。" : err && err.code === "not_granted" ? "許可されませんでした。" : "もう一度お試しください。"}`;
+    }
+    if (my === genId) {
+      busy = false;
+      const c = $("#gc");
+      if (c) c.innerHTML = "";
+    }
+    window.upd();
+  }
+  function startQ(n) {
+    const P = pool();
+    if (!P.length) return;
+    const qs = shuffled(P).slice(0, Math.max(1, Math.min(n || P.length, P.length))).map(present);
+    Q = { qs, i: 0, a: [], sh: 0, c: 0, ex: cur, dm: {} };
+    qq();
+  }
+  function qq() {
+    go("Q" + oid(Q) + "-" + Q.i);
+    const x = Q.qs[Q.i], k = x.a.length, sel = Q.a;
+    $("#app").innerHTML = `<div class="top"><button id="qh">終了</button><span>${Q.i + 1} / ${Q.qs.length}</span><span>正解 ${Q.c}</span></div>
+ <div class="card"><p class="mu">${esc(domJa(x.d))}　${k > 1 ? k + "つ選択" : "1つ選択"}</p><p>${esc(x.q)}</p>${x.o.map((o, i) => {
+      let c = "";
+      if (Q.sh) c = x.a.includes(i) ? "ok" : sel.includes(i) ? "ng" : "";
+      else if (sel.includes(i)) c = "sel";
+      return `<div class="opt ${c}" data-i="${i}"><b>${L5[i]}</b><span>${esc(o)}</span></div>`;
+    }).join("")}</div>
+ ${Q.sh ? `<div class="card"><p><b style="color:var(${ok(x, sel) ? "--ok" : "--ng"})">${ok(x, sel) ? "正解" : "不正解"}</b></p><div class="ex">${esc(x.e)}</div></div><button class="p" id="qx" style="width:100%">${Q.i < Q.qs.length - 1 ? "次へ" : "結果を見る"}</button>` : `<button class="p" id="qa" style="width:100%" ${sel.length ? "" : "disabled"}>答え合わせ</button>`}`;
+    if (!Q.sh)
+      document.querySelectorAll(".opt").forEach(
+        (d) => d.onclick = () => {
+          const i = +d.dataset.i, s = Q.a;
+          if (k === 1) Q.a = [i];
+          else if (s.includes(i)) Q.a = s.filter((v) => v !== i);
+          else if (s.length < k) s.push(i);
+          qq();
+        }
+      );
+    $("#qh").onclick = () => {
+      home();
+    };
+    if (Q.sh)
+      $("#qx").onclick = () => {
+        if (Q.i < Q.qs.length - 1) {
+          Q.i++;
+          Q.a = [];
+          Q.sh = 0;
+          qq();
+        } else {
+          const pc = Math.round(Q.c / Q.qs.length * 100), p = (EX[Q.ex] || {}).p || 65;
+          if (!Q.done) {
+            Q.done = 1;
+            S.hist.push({
+              t: Date.now(),
+              ex: Q.ex,
+              k: "q",
+              pct: pc,
+              cor: Q.c,
+              tot: Q.qs.length,
+              pass: null,
+              sec: 0,
+              dom: Q.dm
+            });
+            save();
+          }
+          go("Qr" + oid(Q));
+          $("#app").innerHTML = `<div class="hero"><div><h1>一問一答の結果</h1><div class="big">${pc}<small>%</small></div><p>${Q.c} / ${Q.qs.length}問正解</p></div></div><div class="card"><h2>分野ごとの正答率</h2>${dbars(Q.dm, p, domainNames(Q.ex, Q.dm), weightsOf(Q.ex))}</div><div class="row"><button id="qr">もう一度</button><button class="p" id="qh2">ホームへ</button></div>`;
+          $("#qr").onclick = () => startQ(Q.qs.length);
+          $("#qh2").onclick = home;
+        }
+      };
+    else
+      $("#qa").onclick = () => {
+        Q.sh = 1;
+        const r = ok(x, Q.a), d = Q.dm[x.d] || (Q.dm[x.d] = [0, 0]);
+        d[1]++;
+        if (r) {
+          Q.c++;
+          d[0]++;
+          clrWr(x);
+        } else addWr(x);
+        touch();
+        qq();
+      };
+  }
+  var RUN = "sfrun";
+  var shown = () => R.m ? Math.round((R.end - (R.paused || Date.now())) / 1e3) : Math.round(((R.paused || Date.now()) - R.t0) / 1e3);
+  var tshow = () => R.m ? fmt(shown()) : "経過 " + fmt(shown());
+  function runPayload() {
+    if (!R || R.done) return null;
+    const left = Math.max(0, shown());
+    return {
+      qs: R.qs,
+      ans: R.ans,
+      fl: R.fl,
+      i: R.i,
+      m: R.m,
+      p: R.p,
+      ex: R.ex,
+      left,
+      rnd: !!R.rnd,
+      ts: Date.now()
+    };
+  }
+  function runClear() {
+    try {
+      localStorage.removeItem(RUN);
+    } catch (e) {
+    }
+  }
+  function runSave() {
+    try {
+      if (!R) return true;
+      const d = runPayload();
+      if (!d) {
+        localStorage.removeItem(RUN);
+        return true;
+      }
+      const v = JSON.stringify(d);
+      localStorage.setItem(RUN, v);
+      const ok2 = localStorage.getItem(RUN) === v;
+      R.sf = ok2;
+      return ok2;
+    } catch (e) {
+      if (R) R.sf = false;
+      return false;
+    }
+  }
+  var storeOk = () => {
+    try {
+      localStorage.setItem("sfprobe", "1");
+      const r = localStorage.getItem("sfprobe") === "1";
+      localStorage.removeItem("sfprobe");
+      return r;
+    } catch (e) {
+      return false;
+    }
+  };
+  addEventListener("pagehide", () => runSave());
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "hidden") runSave();
+  });
+  function tmr() {
+    clearInterval(T);
+    T = setInterval(() => {
+      if (!R || R.paused) return;
+      const l = shown();
+      const t = $("#tm");
+      if (t) t.textContent = tshow();
+      R.tk = (R.tk || 0) + 1;
+      if (R.tk % 3 === 0) runSave();
+      if (R.m && l <= 0) finish();
+    }, 1e3);
+  }
+  function resume(d) {
+    cur = canonExam(d.ex);
+    S.rnd = !!d.rnd;
+    save();
+    R = {
+      rnd: !!d.rnd,
+      qs: d.qs,
+      ans: d.ans,
+      fl: d.fl,
+      i: d.i,
+      m: d.m,
+      p: d.p,
+      ex: d.ex,
+      t0: Date.now() - (d.m ? d.m * 60 - d.left : d.left) * 1e3,
+      end: d.m ? Date.now() + d.left * 1e3 : Date.now() + 3e11,
+      paused: Date.now()
+    };
+    tmr();
+    pz(0);
+  }
+  function start(n, m, p) {
+    const P = pool();
+    if (!P.length) {
+      $("#pc").textContent = "問題がありません。ページ下の「設定」から、問題パックを読み込んでください。";
+      return;
+    }
+    const qs = (S.rnd ? shuffled(P) : P.slice()).slice(0, Math.max(1, n || 60)).map(present);
+    R = {
+      rnd: !!S.rnd,
+      qs,
+      ans: qs.map(() => []),
+      fl: qs.map(() => 0),
+      i: 0,
+      m,
+      p,
+      t0: Date.now(),
+      end: m ? Date.now() + m * 6e4 : Date.now() + 3e11,
+      ex: cur
+    };
+    tmr();
+    q();
+  }
+  function q() {
+    runSave();
+    go("q" + oid(R) + "-" + R.i);
+    const x = R.qs[R.i], a = R.ans[R.i], k = x.a.length;
+    $("#app").innerHTML = `<div class="top"><span id="tm">${tshow()}</span><span>${R.i + 1} / ${R.qs.length}</span><button id="ps" style="min-height:40px">一時停止</button></div>
+ <div class="card"><p class="mu">${k > 1 ? k + "つ選択" : "1つ選択"}</p><p>${esc(x.q)}</p>${x.o.map((o, i) => `<div class="opt ${a.includes(i) ? "sel" : ""}" data-i="${i}"><b>${"ABCDE"[i]}</b><span>${esc(o)}</span></div>`).join("")}</div>
+ <div class="row"><button id="pv">前へ</button><button id="fg">${R.fl[R.i] ? "フラグ解除" : "フラグ"}</button><button id="ls">一覧</button><button id="nx" class="p">次へ</button></div>`;
+    document.querySelectorAll(".opt").forEach(
+      (d) => d.onclick = () => {
+        const i = +d.dataset.i, s = R.ans[R.i];
+        if (k === 1) R.ans[R.i] = [i];
+        else if (s.includes(i)) R.ans[R.i] = s.filter((v) => v !== i);
+        else if (s.length < k) s.push(i);
+        q();
+      }
+    );
+    $("#pv").onclick = () => {
+      if (R.i > 0) {
+        R.i--;
+        q();
+      }
+    };
+    $("#nx").onclick = () => {
+      if (R.i < R.qs.length - 1) {
+        R.i++;
+        q();
+      } else list();
+    };
+    $("#fg").onclick = () => {
+      R.fl[R.i] ^= 1;
+      q();
+    };
+    $("#ls").onclick = list;
+    $("#ps").onclick = pause;
+    if (R.sf === false)
+      document.querySelector(".top").insertAdjacentHTML(
+        "afterend",
+        '<p class="mu" style="color:var(--ng);margin:0 0 6px">この環境では途中保存ができません。ページを閉じると、試験は最初からになります。</p>'
+      );
+  }
+  function list() {
+    runSave();
+    go("l" + oid(R));
+    const un = R.ans.filter((a) => !a.length).length;
+    $("#app").innerHTML = `<div class="top"><span id="tm">${tshow()}</span><span>未回答 ${un}問</span><button id="ps" style="min-height:40px">一時停止</button></div>
+ <div class="card"><div class="grid">${R.qs.map((_, i) => `<button data-i="${i}" class="${R.ans[i].length ? "dn" : ""} ${R.fl[i] ? "fl" : ""}">${i + 1}</button>`).join("")}</div><p class="mu">青＝回答済み　橙の角＝フラグ</p></div>
+ <button class="p" id="fn" style="width:100%">採点する</button>`;
+    document.querySelectorAll(".grid button").forEach(
+      (b) => b.onclick = () => {
+        R.i = +b.dataset.i;
+        q();
+      }
+    );
+    $("#fn").onclick = finish;
+    $("#ps").onclick = pause;
+  }
+  function pause() {
+    if (!R || R.paused) return;
+    R.paused = Date.now();
+    runSave();
+    pz(0);
+  }
+  function pz(c) {
+    go("p" + oid(R) + c);
+    $("#app").innerHTML = `<h1>一時停止中</h1><div class="card"><p class="mu">${R.m ? "残り時間" : "経過時間"}</p><div class="big">${fmt(shown())}</div><p class="mu">再開するまで、時間は止まります。</p></div>${c ? `<div class="card"><p>試験をやめると、この試験の結果は記録されません。</p><div class="row"><button id="pn">戻る</button><button id="py" style="color:var(--ng);border-color:var(--ng)">やめてホームへ</button></div></div>` : `<div class="row"><button id="pq">試験をやめる</button><button class="p" id="pr">再開する</button></div>`}`;
+    if (c) {
+      $("#pn").onclick = () => pz(0);
+      $("#py").onclick = () => {
+        clearInterval(T);
+        R = null;
+        runClear();
+        home();
+      };
+    } else {
+      $("#pq").onclick = () => pz(1);
+      $("#pr").onclick = () => {
+        R.end += Date.now() - R.paused;
+        if (!R.m) R.t0 += Date.now() - R.paused;
+        R.paused = 0;
+        q();
+      };
+    }
+  }
+  var ok = (x, a) => a.length === x.a.length && x.a.every((v) => a.includes(v));
+  function finish() {
+    if (!R || R.done) return;
+    R.done = 1;
+    clearInterval(T);
+    runSave();
+    const el = Math.round((Date.now() - R.t0) / 1e3), sec = R.m ? Math.min(R.m * 60, el) : el, dm = {};
+    let c = 0;
+    R.qs.forEach((x, i) => {
+      const r = ok(x, R.ans[i]);
+      c += r ? 1 : 0;
+      const d = dm[x.d] || (dm[x.d] = [0, 0]);
+      d[1]++;
+      d[0] += r ? 1 : 0;
+      if (r) clrWr(x);
+      else addWr(x);
+    });
+    const pct = Math.round(c / R.qs.length * 100), pass = pct >= R.p;
+    S.hist.push({ t: Date.now(), ex: R.ex, pct, cor: c, tot: R.qs.length, pass, sec, dom: dm });
+    touch();
+    save();
+    R.dm = dm;
+    R.pct = pct;
+    R.pass = pass;
+    R.c = c;
+    R.sec = sec;
+    res(false);
+  }
+  function res(w) {
+    const L = R.qs.map((x, i) => [x, i]).filter(([x, i]) => !w || !ok(x, R.ans[i]));
+    $("#app").innerHTML = `<div class="hero"><div><h1>結果 <span class="pill">${R.pass ? "合格" : "不合格"}</span></h1><div class="big">${R.pct}<small>%</small></div><p>${R.c} / ${R.qs.length}問正解　合格ライン ${R.p}%　所要時間 ${fmt(R.sec)}</p></div></div>
+ <div class="card"><h2>分野ごとの正答率</h2>${dbars(R.dm, R.p, domainNames(R.ex, R.dm), weightsOf(R.ex))}</div>
+ <div class="row"><button id="wg">${w ? "すべて表示" : "間違いのみ表示"}</button><button id="hm" class="p">ホームへ</button></div>
+ ${L.map(([x, i]) => `<div class="card"><p class="mu">問${i + 1}　${esc(domJa(x.d))}　${ok(x, R.ans[i]) ? "正解" : "不正解"}</p><p>${esc(x.q)}</p>${x.o.map((o, j) => `<div class="opt ${x.a.includes(j) ? "ok" : R.ans[i].includes(j) ? "ng" : ""}"><b>${L5[j]}</b><span>${esc(o)}${R.ans[i].includes(j) ? "　←あなたの回答" : ""}</span></div>`).join("")}<div class="ex">${esc(x.e)}</div></div>`).join("")}`;
+    $("#wg").onclick = () => res(!w);
+    $("#hm").onclick = home;
+    window.scrollTo(0, 0);
+  }
+  (async () => {
+    syncEx();
+    try {
+      navigator.storage?.persist?.();
+    } catch (e) {
+    }
+    home();
+  })();
+})();
+
+</script>
