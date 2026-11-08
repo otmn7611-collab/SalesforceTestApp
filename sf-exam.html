@@ -869,6 +869,8 @@ input[type="date"] {
   } catch (e) {
   }
   S.pool = S.pool || {};
+  S.sets = S.sets || {};
+  S.cs = S.cs || {};
   S.hist = S.hist || [];
   S.wr = S.wr || {};
   S.exd = S.exd || {};
@@ -913,6 +915,40 @@ input[type="date"] {
   };
   var weightsOf = (ex) => Object.fromEntries(((EX[ex] || {}).d || []).map(([k, w]) => [k, w]));
   var pool = () => S.pool[cur] || (S.pool[cur] = []);
+  var LEGACY_SET = "これまでの問題";
+  function ensureSets() {
+    S.sets = S.sets || {};
+    S.cs = S.cs || {};
+    for (const k in S.pool) if ((S.pool[k] || []).length && !S.cs[k]) S.cs[k] = LEGACY_SET;
+  }
+  var setNames = (ex) => (S.pool[ex] || []).length || (S.cs || {})[ex] ? [S.cs[ex], ...Object.keys((S.sets || {})[ex] || {})].filter(Boolean) : Object.keys((S.sets || {})[ex] || {});
+  var setCount = (ex, name) => name === (S.cs || {})[ex] ? (S.pool[ex] || []).length : ((S.sets[ex] || {})[name] || []).length;
+  function useSet(ex, name) {
+    S.sets = S.sets || {};
+    S.cs = S.cs || {};
+    const lib = S.sets[ex] || (S.sets[ex] = {});
+    if (S.cs[ex] === name) return;
+    if (S.cs[ex]) lib[S.cs[ex]] = S.pool[ex] || [];
+    S.pool[ex] = lib[name] || [];
+    delete lib[name];
+    S.cs[ex] = name;
+    if (S.rg) delete S.rg[ex];
+    randomizeAnswers(S.pool);
+  }
+  function deleteSet(ex) {
+    const lib = (S.sets || {})[ex] || {};
+    const next = Object.keys(lib)[0];
+    if (next) {
+      S.pool[ex] = lib[next];
+      delete lib[next];
+      S.cs[ex] = next;
+    } else {
+      S.pool[ex] = [];
+      delete S.cs[ex];
+    }
+    if (S.rg) delete S.rg[ex];
+  }
+  ensureSets();
   function rangeOf() {
     const n = pool().length, r = (S.rg || {})[cur];
     if (!r) return [1, n];
@@ -1099,6 +1135,8 @@ input[type="date"] {
  <div class="card"><span class="eb">SETTINGS</span><h2>試験名</h2><label><select id="xn" aria-label="試験名">${(Object.keys(
       EX
     ).length ? Object.keys(EX) : ["（問題パックを読み込んでください）"]).map((k) => `<option ${k === cur ? "selected" : ""}>${esc(k)}</option>`).join("")}</select></label><p class="mu" id="nt"></p>
+ <label style="margin-top:12px">問題セット<select id="ps" aria-label="問題セット"></select></label>
+ <button id="pk" style="width:100%;margin-top:8px">問題ファイル（JSON）を選ぶ</button><input type="file" id="pkf" hidden><p class="mu" id="pm" style="margin:6px 0 0"></p>
  <div class="row"><label>問題数<input id="xq" type="number" min="1" value="${e.n}"></label><label>時間（分）<input id="xm" type="number" min="1" value="${e.m}"></label><label>合格（%）<input id="xp" type="number" min="1" max="100" value="${e.p}"></label></div>
  <p class="mu" id="pc" style="margin:14px 0 0"></p><div class="bar" style="margin:6px 0 0"><i id="gp"></i></div>
  <div class="optbox"><button class="acc-h" id="opt" aria-expanded="false" aria-controls="opt-b"><b style="font-size:15px">オプション</b><span id="os"></span><span class="chev" aria-hidden="true"></span></button>
@@ -1113,11 +1151,11 @@ input[type="date"] {
  <section class="sec"><span class="eb">CONTENTS</span><h2>学習メニュー</h2><i class="rule"></i><div class="toc"><p class="gl">問題を解く</p><div class="mi"><div class="mh"><div class="mt"><b>一問一答</b><small id="qm"></small></div><div class="ma"><input id="qc" type="number" min="1" value="1" aria-label="出題数" style="width:64px"><button class="p" id="qs">始める</button></div><button class="inf" data-i="q" aria-label="一問一答の説明" aria-expanded="false">i</button></div><div class="if" id="in-q"><div><p>作成済みの問題からランダムに出題します。1問ごとに答え合わせと解説が出ます。出題数の上限は、作成済みの問題数です。</p></div></div></div><p class="gl">苦手分野</p><div class="mi"><div class="mh"><div class="mt"><b>対策問題を解く</b><small>弱点から最大10問</small></div><div class="ma"><button class="p" id="tr">始める</button></div><button class="inf" data-i="tr" aria-label="対策問題を解くの説明" aria-expanded="false">i</button></div><div class="if" id="in-tr"><div><p>作成済みの問題から、正答率が低い分野の問題と、過去に間違えた問題を優先して、最大10問を出します。</p></div></div></div></div></section>
  <section class="sec" id="st"></section>
   <section class="sec"><span class="eb">RECORDS</span><h2>成績</h2><i class="rule"></i><p class="mu" id="hx" style="margin:0 0 8px"></p><div id="hl"></div><div class="row" id="rs"></div>
-  <p class="mu" id="xt"></p><div class="row"><button id="xo">成績を書き出す</button><button id="xi">成績を読み込む</button></div><input type="file" id="xf" accept="application/json,.json" hidden><p class="mu" id="xm2"></p></section>
+  <p class="mu" id="xt"></p><div class="row"><button id="xo">成績を書き出す</button><button id="xi">成績を読み込む</button></div><input type="file" id="xf" hidden><p class="mu" id="xm2"></p></section>
   <section class="sec admin"><span class="eb">ADMIN</span><button class="acc-h" id="acc" aria-expanded="${dataOpen}" aria-controls="acc-b"><b>設定</b><span class="chev" aria-hidden="true"></span></button><p class="mu" style="margin:0">問題パックの保存・読み込み${STUDY ? "" : "と、問題の作成"}です。</p>
  <div class="acc-b ${dataOpen ? "on" : ""}" id="acc-b"><div>
- <div class="sub"><div class="mh" style="padding:0"><h3 style="flex:1;margin:0">問題パック</h3><button class="inf" data-i="dr" aria-label="問題パックの説明" aria-expanded="false">i</button></div><div class="if" id="in-dr"><div><p>問題パックは、問題と試験の定義だけを入れたJSONファイルです。家族や友だちに渡すときは、このファイルをAirDropやLINE、メールなどで送ってください。成績は入りません。「保存」で、いま選んでいる試験の問題をファイルにします（iPhoneは「ファイル」アプリの好きな場所、PCは好きなフォルダに保存できます）。「追加で読み込む」は、もらったファイルの問題を足します（同じ問題文の問題は重複せず、内容も更新されません）。「入れ替えて読み込む」は、そのパックに入っている試験の問題を、ファイルの内容そのものにします（直したパックを使うときはこちら。成績の記録は残ります）。成績は別に、ページ下の「成績を書き出す」で保存します。</p></div></div>
- <div class="row"><button id="pk">パックを追加で読み込む</button><button id="pks">パックを保存</button></div><button id="pkr" style="width:100%;margin-top:8px">入れ替えて読み込む（同じ試験の元の問題は消えます）</button><input type="file" id="pkf" accept="application/json,.json" hidden><div id="pl"></div></div>
+ <div class="sub"><div class="mh" style="padding:0"><h3 style="flex:1;margin:0">問題パック</h3><button class="inf" data-i="dr" aria-label="問題パックの説明" aria-expanded="false">i</button></div><div class="if" id="in-dr"><div><p>問題ファイル（問題パック）は、問題と試験の定義だけを入れたJSONファイルです。ファイルを選ぶと、ファイル名の「問題セット」として、このアプリの中に取り込みます。元のファイルは、読むだけで書き換えません。同じ名前のファイルをもう一度選ぶと、そのセットの内容を更新します。セットは、ページ上の「問題セット」で切り替えられます。成績は試験ごとに残り、セットを切り替えても消えません（成績にセット名も記録します）。ここの「保存」は、いま使っている問題を新しいファイルに書き出します。家族や友だちに渡すときは、このファイルをAirDropやLINE、メールなどで送ってください。成績は入りません。</p></div></div>
+ <button id="pks" style="width:100%">いま使っている問題を、ファイルに保存</button><div id="pdr"></div><div id="pl"></div></div>
  ${STUDY ? "" : `<button class="p" id="gb" style="width:100%;margin-top:14px">問題を作成する（AI）</button><div id="gc"></div>`}
  <p class="mu" id="gm"></p><p class="mu" id="sk" style="margin:10px 0 0"></p></div></div></section>
  </div></div>`;
@@ -1181,6 +1219,7 @@ input[type="date"] {
         $("#xp").value = k.p;
       }
       if (window.hv) window.hv();
+      if (window.fs) window.fs();
       const rg = (S.rg || {})[cur];
       $("#rf").value = rg && rg[0] > 1 ? rg[0] : "";
       $("#rt").value = rg && rg[1] ? rg[1] : "";
@@ -1229,7 +1268,7 @@ input[type="date"] {
       const L = S.hist.filter((h) => h.ex === cur);
       $("#hx").textContent = `${cur}の成績です。成績は、試験ごとに分けて残しています。`;
       $("#hl").innerHTML = L.length ? `<div class="toc">${L.slice(histAll ? -MAX_DET * 2 : -5).reverse().map(
-        (h) => `<div class="mi"><div class="mh"><div class="mt"><b>${new Date(h.t).toLocaleDateString("ja-JP")}</b><small>${h.cor}/${h.tot}問　${h.k === "q" ? "一問一答" : (h.pass ? "合格" : "不合格") + "　" + fmt(h.sec)}</small></div><b class="pc">${h.pct}<small>%</small></b></div>${h.det ? `<div class="row" style="margin-top:8px"><button class="hv" data-t="${h.t}" style="min-height:40px">問題と解説を見る</button></div>` : ""}</div>`
+        (h) => `<div class="mi"><div class="mh"><div class="mt"><b>${new Date(h.t).toLocaleDateString("ja-JP")}</b><small>${h.cor}/${h.tot}問　${h.k === "q" ? "一問一答" : (h.pass ? "合格" : "不合格") + "　" + fmt(h.sec)}</small>${h.set ? `<small>問題セット：${esc(h.set)}</small>` : ""}</div><b class="pc">${h.pct}<small>%</small></b></div>${h.det ? `<div class="row" style="margin-top:8px"><button class="hv" data-t="${h.t}" style="min-height:40px">問題と解説を見る</button></div>` : ""}</div>`
       ).join(
         ""
       )}</div>${L.length > 5 ? `<div class="row"><button id="hall">${histAll ? "直近5回だけ表示" : "すべての回を表示"}</button></div>` : ""}` : '<p class="mu">この試験の記録は、まだありません。</p>';
@@ -1289,8 +1328,12 @@ input[type="date"] {
     };
     $("#xi").onclick = () => $("#xf").click();
     $("#xf").onchange = async (ev) => {
-      const f = ev.target.files[0];
-      if (f) importProgress(await f.text());
+      const inp = ev.target;
+      const f = inp.files[0];
+      if (!f) return;
+      const text = await f.text();
+      inp.value = "";
+      importProgress(text);
     };
     $("#xn").onchange = up;
     $("#xq").oninput = upd;
@@ -1337,12 +1380,12 @@ input[type="date"] {
       upd();
     };
     $("#go").onclick = () => start(+$("#xq").value, S.nolim ? 0 : +$("#xm").value, +$("#xp").value);
+    $("#acc").onclick = () => {
+      dataOpen = !dataOpen;
+      $("#acc").setAttribute("aria-expanded", String(dataOpen));
+      $("#acc-b").classList.toggle("on", dataOpen);
+    };
     if (!STUDY) {
-      $("#acc").onclick = () => {
-        dataOpen = !dataOpen;
-        $("#acc").setAttribute("aria-expanded", String(dataOpen));
-        $("#acc-b").classList.toggle("on", dataOpen);
-      };
       $("#gb").onclick = () => {
         if (busy) return;
         const N = Math.max(0, (+$("#xq").value || 0) - pool().length);
@@ -1379,50 +1422,98 @@ input[type="date"] {
   }
   var PACKF = "sf-pack";
   var packMsg = "";
-  function importPack(d, replace = false) {
+  function importPack(d, fname) {
     if (!okD(d)) throw new Error("問題パックの形式ではありません。");
-    const before = poolTotal(S);
-    if (replace) {
-      for (const k in d.pool) S.pool[canonExam(k)] = [];
-      if (S.rg) for (const k in d.pool) delete S.rg[canonExam(k)];
+    const name = fname.replace(/\.json$/i, "").trim() || "問題セット";
+    ensureSets();
+    const merged = {};
+    for (const k in d.pool) {
+      const ex = canonExam(k);
+      const seen = new Set((merged[ex] || []).map((x) => x.q));
+      const list2 = merged[ex] || (merged[ex] = []);
+      (d.pool[k] || []).forEach((x) => {
+        if (x && x.q && !seen.has(x.q)) {
+          seen.add(x.q);
+          list2.push(x);
+        }
+      });
     }
-    merge({ pool: d.pool, exams: {} });
+    let n = 0;
+    for (const ex in merged) {
+      const lib = S.sets[ex] || (S.sets[ex] = {});
+      if (S.cs[ex] !== name) {
+        if (S.cs[ex]) lib[S.cs[ex]] = S.pool[ex] || [];
+        S.cs[ex] = name;
+      }
+      delete lib[name];
+      S.pool[ex] = merged[ex];
+      if (S.rg) delete S.rg[ex];
+      n += merged[ex].length;
+    }
     for (const k in d.exams || {}) S.exams[canonExam(k)] = d.exams[k];
     syncEx();
     randomizeAnswers(S.pool);
-    const first = Object.keys(d.pool).map(canonExam).find((k) => EX[k] && (S.pool[k] || []).length);
+    const first = Object.keys(merged).find((k) => EX[k] && (S.pool[k] || []).length);
     if (first) cur = first;
     save();
-    return poolTotal(S) - before;
+    return { name, n };
   }
   function packUi() {
-    let replaceMode = false;
-    const done = (n, rep = false) => {
-      packMsg = rep ? `問題を入れ替えました（${poolTotal(S)}問）。成績の記録は残っています。` : n ? `${n}問を追加しました。` : "新しい問題はありませんでした。同じ問題文の問題は、追加では更新されません。解説などを直したパックは「入れ替えて読み込む」で読み込んでください。";
+    const done = (r) => {
+      packMsg = `「${r.name}」（${r.n}問）を読み込み、この問題セットを使います。`;
       home();
     };
-    const fail = (e) => $("#gm").textContent = errMsg(e);
-    $("#gm").textContent = packMsg;
-    $("#pk").onclick = () => {
-      replaceMode = false;
-      $("#pkf").click();
-    };
-    $("#pkr").onclick = () => {
-      replaceMode = true;
-      $("#pkf").click();
-    };
+    const fail = (e) => $("#pm").textContent = errMsg(e);
+    $("#pm").textContent = packMsg;
+    $("#pk").onclick = () => $("#pkf").click();
     $("#pkf").onchange = async (ev) => {
       const inp = ev.target;
       const f = inp.files[0];
       if (!f) return;
-      const rep = replaceMode;
-      inp.value = "";
+      $("#pm").textContent = `「${f.name}」を読み込んでいます…`;
       try {
-        done(importPack(JSON.parse(await f.text()), rep), rep);
+        const text = await f.text();
+        inp.value = "";
+        done(importPack(JSON.parse(text), f.name));
       } catch (e) {
+        inp.value = "";
         fail(e);
       }
     };
+    const fillSets = () => {
+      const ps = $("#ps");
+      const names = setNames(cur);
+      ps.innerHTML = names.length ? names.map(
+        (n) => `<option value="${esc(n)}" ${n === S.cs[cur] ? "selected" : ""}>${esc(n)}（${setCount(cur, n)}問）</option>`
+      ).join("") : "<option>（まだありません。下のボタンで問題ファイルを選んでください）</option>";
+      ps.disabled = !names.length;
+    };
+    window.fs = fillSets;
+    fillSets();
+    $("#ps").onchange = (e) => {
+      useSet(cur, e.target.value);
+      packMsg = "";
+      save();
+      home();
+    };
+    const dr = (c) => {
+      const box = $("#pdr");
+      if (!S.cs[cur]) {
+        box.innerHTML = "";
+        return;
+      }
+      box.innerHTML = c ? `<div class="row"><button id="pd1" style="color:var(--ng);border-color:var(--ng)">本当に削除する</button><button id="pd0">やめる</button></div>` : `<button id="pd2" style="width:100%;margin-top:8px">いま使っている問題セットを削除</button>`;
+      if (c) {
+        $("#pd0").onclick = () => dr(0);
+        $("#pd1").onclick = () => {
+          packMsg = `「${S.cs[cur]}」を削除しました。成績の記録は残っています。`;
+          deleteSet(cur);
+          save();
+          home();
+        };
+      } else $("#pd2").onclick = () => dr(1);
+    };
+    dr(0);
     fetch("packs/index.json").then((r) => r.ok ? r.json() : null).then((list2) => {
       if (!Array.isArray(list2) || !list2.length || !$("#pl")) return;
       list2 = list2.filter((x) => x && /^[^/\\]+\.json$/.test(String(x.file)));
@@ -1432,9 +1523,10 @@ input[type="date"] {
       document.querySelectorAll("#pl .pf").forEach(
         (b) => b.onclick = async () => {
           try {
-            const r = await fetch("packs/" + encodeURIComponent(list2[+b.dataset.i].file));
+            const x = list2[+b.dataset.i];
+            const r = await fetch("packs/" + encodeURIComponent(x.file));
             if (!r.ok) throw new Error("パックを取得できませんでした。");
-            done(importPack(await r.json()));
+            done(importPack(await r.json(), x.file));
           } catch (e) {
             fail(e);
           }
@@ -1615,7 +1707,8 @@ input[type="date"] {
               tot: Q.qs.length,
               pass: null,
               sec: 0,
-              dom: Q.dm
+              dom: Q.dm,
+              set: S.cs[Q.ex] || ""
             });
             save();
           }
@@ -1863,6 +1956,7 @@ input[type="date"] {
       pass,
       sec,
       dom: dm,
+      set: S.cs[R.ex] || "",
       // あとで見返せるように、問題・解説・自分の答えをそのまま残す（新しい MAX_DET 回分まで）
       det: { qs: R.qs.map((x) => ({ ...x })), ans: R.ans.map((a) => a.slice()), p: R.p }
     });
