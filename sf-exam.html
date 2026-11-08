@@ -599,6 +599,65 @@ input[type="date"] {
   }
 }
 
+/* 長いURLやコードが、枠からはみ出さないようにする */
+.card,
+.card p,
+.ex,
+.opt span {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+.card a,
+.ex a,
+.opt a {
+  color: var(--ac);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* オプション欄（枠で囲む） */
+.optbox {
+  margin: 16px -12px 0;
+  padding: 0 16px;
+  border: 1px solid var(--ln);
+  border-radius: 16px;
+}
+.optbox .acc-b > div {
+  padding: 6px 6px 22px;
+  margin: -6px;
+}
+
+/* オプションの見出し：題名と矢印を1行に、有効な設定は次の行にタグで並べる */
+.optbox .acc-h {
+  flex-wrap: wrap;
+  row-gap: 0;
+  padding: 6px 0;
+}
+.optbox .acc-h b {
+  flex: 1 1 auto;
+  white-space: nowrap;
+}
+#os {
+  order: 3;
+  flex: 1 0 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding-bottom: 8px;
+}
+#os:empty {
+  display: none;
+}
+.tg {
+  border: 1px solid var(--ac);
+  color: var(--ac);
+  border-radius: 999px;
+  padding: 1px 10px;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
 </style>
 <main id="app"></main>
 <script>
@@ -711,6 +770,10 @@ input[type="date"] {
     '"': "&quot;"
   };
   var esc = (s) => String(s).replace(/[&<>"]/g, (c) => HTML_ESCAPES[c]);
+  var rich = (s) => esc(s).replace(
+    /https?:\/\/(?:(?!&quot;|&lt;|&gt;)[^\s"'<>()）」、。])+/g,
+    (u) => `<a href="${u}" target="_blank" rel="noopener noreferrer">${u}</a>`
+  );
   var fmt = (sec) => {
     const s = Math.max(0, sec);
     return String(Math.floor(s / 60)).padStart(2, "0") + ":" + String(s % 60).padStart(2, "0");
@@ -850,6 +913,17 @@ input[type="date"] {
   };
   var weightsOf = (ex) => Object.fromEntries(((EX[ex] || {}).d || []).map(([k, w]) => [k, w]));
   var pool = () => S.pool[cur] || (S.pool[cur] = []);
+  function rangeOf() {
+    const n = pool().length, r = (S.rg || {})[cur];
+    if (!r) return [1, n];
+    const a = Math.min(Math.max(1, r[0] || 1), Math.max(1, n)), b = Math.min(Math.max(a, r[1] || n), n);
+    return [a, b];
+  }
+  var rangePool = () => {
+    const [a, b] = rangeOf();
+    return pool().slice(a - 1, b);
+  };
+  var ranged = () => !!(S.rg || {})[cur];
   var agg = (ex) => {
     const dm = {};
     let n = 0;
@@ -1026,18 +1100,23 @@ input[type="date"] {
       EX
     ).length ? Object.keys(EX) : ["（問題パックを読み込んでください）"]).map((k) => `<option ${k === cur ? "selected" : ""}>${esc(k)}</option>`).join("")}</select></label><p class="mu" id="nt"></p>
  <div class="row"><label>問題数<input id="xq" type="number" min="1" value="${e.n}"></label><label>時間（分）<input id="xm" type="number" min="1" value="${e.m}"></label><label>合格（%）<input id="xp" type="number" min="1" max="100" value="${e.p}"></label></div>
- <label style="display:flex;align-items:center;gap:10px;margin-top:12px;font-size:15px"><input type="checkbox" id="xr" ${S.rnd ? "checked" : ""} style="width:22px;height:22px;min-height:0;margin:0;flex:none">ランダムに出題する<small class="mu" style="margin-left:auto">オフ＝ファイルの順</small></label>
+ <p class="mu" id="pc" style="margin:14px 0 0"></p><div class="bar" style="margin:6px 0 0"><i id="gp"></i></div>
+ <div class="optbox"><button class="acc-h" id="opt" aria-expanded="false" aria-controls="opt-b"><b style="font-size:15px">オプション</b><span id="os"></span><span class="chev" aria-hidden="true"></span></button>
+ <div class="acc-b" id="opt-b"><div><p class="mu" style="margin:12px 0 6px">出題範囲（問題番号）</p><div style="display:flex;align-items:center;gap:10px"><input id="rf" type="number" min="1" inputmode="numeric" placeholder="最初" aria-label="出題範囲の開始番号"><span aria-hidden="true">〜</span><input id="rt" type="number" min="1" inputmode="numeric" placeholder="最後" aria-label="出題範囲の終了番号"></div><p class="mu" style="margin:4px 0 0">空欄＝すべて。番号は、問題パックに並んでいる順です。</p>
+  <label style="display:flex;align-items:center;gap:10px;margin-top:12px;font-size:15px"><input type="checkbox" id="xr" ${S.rnd ? "checked" : ""} style="width:22px;height:22px;min-height:0;margin:0;flex:none">ランダムに出題する<small class="mu" style="margin-left:auto">オフ＝ファイルの順</small></label>
  <label style="display:flex;align-items:center;gap:10px;margin-top:8px;font-size:15px"><input type="checkbox" id="xs" ${S.shuf ? "checked" : ""} style="width:22px;height:22px;min-height:0;margin:0;flex:none">選択肢の順番もランダムにする<small class="mu" style="margin-left:auto">毎回変わる</small></label>
  <label style="display:flex;align-items:center;gap:10px;margin-top:8px;font-size:15px"><input type="checkbox" id="xu" ${S.nolim ? "checked" : ""} style="width:22px;height:22px;min-height:0;margin:0;flex:none">制限時間なし<small class="mu" style="margin-left:auto">経過時間だけ計る</small></label>
-<p class="mu" id="pc" style="margin:14px 0 0"></p><div class="bar" style="margin:6px 0 0"><i id="gp"></i></div>
+ <button id="oc" style="width:100%;margin-top:14px">オプションをすべて解除</button></div></div></div>
  </div>
  <button class="go" id="go" disabled>模擬試験を始める</button>
  </div><div class="col">
  <section class="sec"><span class="eb">CONTENTS</span><h2>学習メニュー</h2><i class="rule"></i><div class="toc"><p class="gl">問題を解く</p><div class="mi"><div class="mh"><div class="mt"><b>一問一答</b><small id="qm"></small></div><div class="ma"><input id="qc" type="number" min="1" value="1" aria-label="出題数" style="width:64px"><button class="p" id="qs">始める</button></div><button class="inf" data-i="q" aria-label="一問一答の説明" aria-expanded="false">i</button></div><div class="if" id="in-q"><div><p>作成済みの問題からランダムに出題します。1問ごとに答え合わせと解説が出ます。出題数の上限は、作成済みの問題数です。</p></div></div></div><p class="gl">苦手分野</p><div class="mi"><div class="mh"><div class="mt"><b>対策問題を解く</b><small>弱点から最大10問</small></div><div class="ma"><button class="p" id="tr">始める</button></div><button class="inf" data-i="tr" aria-label="対策問題を解くの説明" aria-expanded="false">i</button></div><div class="if" id="in-tr"><div><p>作成済みの問題から、正答率が低い分野の問題と、過去に間違えた問題を優先して、最大10問を出します。</p></div></div></div></div></section>
  <section class="sec" id="st"></section>
-  <section class="sec"><span class="eb">RECORDS</span><h2>成績</h2><i class="rule"></i>${S.hist.length ? `<div class="toc">${S.hist.slice(-5).reverse().map(
-      (h) => `<div class="mi"><div class="mh"><div class="mt"><b>${esc(h.ex)}</b><small>${new Date(h.t).toLocaleDateString("ja-JP")}　${h.cor}/${h.tot}問　${h.k === "q" ? "一問一答" : (h.pass ? "合格" : "不合格") + "　" + fmt(h.sec)}</small></div><b class="pc">${h.pct}<small>%</small></b></div></div>`
-    ).join("")}</div>` : '<p class="mu">まだ記録がありません。</p>'}<div class="row" id="rs"></div>
+  <section class="sec"><span class="eb">RECORDS</span><h2>成績</h2><i class="rule"></i>${S.hist.length ? `<div class="toc">${S.hist.slice(histAll ? -MAX_DET * 2 : -5).reverse().map(
+      (h) => `<div class="mi"><div class="mh"><div class="mt"><b>${esc(h.ex)}</b><small>${new Date(h.t).toLocaleDateString("ja-JP")}　${h.cor}/${h.tot}問　${h.k === "q" ? "一問一答" : (h.pass ? "合格" : "不合格") + "　" + fmt(h.sec)}</small></div><b class="pc">${h.pct}<small>%</small></b></div>${h.det ? `<div class="row" style="margin-top:8px"><button class="hv" data-t="${h.t}" style="min-height:40px">問題と解説を見る</button></div>` : ""}</div>`
+    ).join(
+      ""
+    )}</div>${S.hist.length > 5 ? `<div class="row"><button id="hall">${histAll ? "直近5回だけ表示" : "すべての回を表示"}</button></div>` : ""}` : '<p class="mu">まだ記録がありません。</p>'}<div class="row" id="rs"></div>
   <p class="mu" id="xt"></p><div class="row"><button id="xo">成績を書き出す</button><button id="xi">成績を読み込む</button></div><input type="file" id="xf" accept="application/json,.json" hidden><p class="mu" id="xm2"></p></section>
   <section class="sec admin"><span class="eb">ADMIN</span><button class="acc-h" id="acc" aria-expanded="${dataOpen}" aria-controls="acc-b"><b>設定</b><span class="chev" aria-hidden="true"></span></button><p class="mu" style="margin:0">問題パックの保存・読み込み${STUDY ? "" : "と、問題の作成"}です。</p>
  <div class="acc-b ${dataOpen ? "on" : ""}" id="acc-b"><div>
@@ -1105,20 +1184,31 @@ input[type="date"] {
         $("#xm").value = k.m;
         $("#xp").value = k.p;
       }
+      const rg = (S.rg || {})[cur];
+      $("#rf").value = rg && rg[0] > 1 ? rg[0] : "";
+      $("#rt").value = rg && rg[1] ? rg[1] : "";
       $("#nt").textContent = k ? (k.note || "") + " 数値はSalesforce公式の試験ガイドに基づきます（2026年11月確認）。改訂されることがあるので、受験前に公式で確認してください。" : "この試験の定義がありません。";
       upd();
     };
     const upd = () => {
-      const n = +$("#xq").value || 0, h = pool().length;
-      $("#pc").textContent = h > n ? `${HAVE} ${h}問（必要な${n}問はそろっています。模擬試験ではこの中から${n}問を出題します）` : `問題 ${h} / ${n}問（不足分は、ページ下の「設定」で${STUDY ? "パックを読み込めます" : "読み込み・作成できます"}）`;
+      const n = +$("#xq").value || 0, hl = pool().length, h = rangePool().length, [ra, rb2] = rangeOf();
+      $("#pc").textContent = ranged() && h >= n ? `${HAVE} ${hl}問のうち、${ra}〜${rb2}問目（${h}問）から${n}問を出題します` : ranged() ? `範囲 ${ra}〜${rb2}問目は${h}問です。出題数 ${n}問に足りません（範囲を広げるか、出題数を減らしてください）` : h > n ? `${HAVE} ${h}問（必要な${n}問はそろっています。模擬試験ではこの中から${n}問を出題します）` : `問題 ${h} / ${n}問（不足分は、ページ下の「設定」で${STUDY ? "パックを読み込めます" : "読み込み・作成できます"}）`;
+      const tags = [
+        ranged() ? `範囲 ${ra}〜${rb2}` : "",
+        S.rnd ? "ランダム出題" : "",
+        S.shuf ? "選択肢ランダム" : "",
+        S.nolim ? "制限時間なし" : ""
+      ].filter(Boolean);
+      $("#oc").disabled = !tags.length;
+      $("#os").innerHTML = tags.map((t) => `<span class="tg">${esc(t)}</span>`).join("");
       if (!busy) $("#gp").style.width = Math.min(100, n ? h / n * 100 : 0) + "%";
       $("#go").disabled = h < n;
-      if (!STUDY) $("#gb").disabled = busy || h >= n;
+      if (!STUDY) $("#gb").disabled = busy || hl >= n;
       if (h >= n && !busy) $("#gm").textContent = "問題がそろいました。試験を始められます。";
-      $("#qm").textContent = `${HAVE}${h}問からランダム`;
-      $("#qc").max = h;
-      if (!+$("#qc").value || +$("#qc").value > h) $("#qc").value = h;
-      $("#qs").disabled = !h;
+      $("#qm").textContent = `${HAVE}${hl}問からランダム`;
+      $("#qc").max = hl;
+      if (!+$("#qc").value || +$("#qc").value > hl) $("#qc").value = hl;
+      $("#qs").disabled = !hl;
       dash();
     };
     window.upd = upd;
@@ -1141,6 +1231,18 @@ input[type="date"] {
       } else $("#r2").onclick = () => rb(1);
     };
     rb(0);
+    document.querySelectorAll(".hv").forEach((b) => {
+      b.onclick = () => {
+        const h = S.hist.find((x) => x.t === +b.dataset.t);
+        if (h && h.det) viewResult(h);
+      };
+    });
+    const ha = document.querySelector("#hall");
+    if (ha)
+      ha.onclick = () => {
+        histAll = !histAll;
+        home();
+      };
     const lastEx = Number(localStorage.getItem(EXPK) || 0);
     $("#xt").textContent = lastEx ? `成績はこの端末に保存されています。最後に書き出した日：${new Date(lastEx).toLocaleDateString("ja-JP")}` : "成績はこの端末に保存されています。端末の変更やデータ消去に備えて、ときどき書き出してください。";
     const importProgress = (text) => {
@@ -1186,20 +1288,47 @@ input[type="date"] {
     };
     $("#xn").onchange = up;
     $("#xq").oninput = upd;
+    const rin = () => {
+      const a = Math.floor(+$("#rf").value) || 0, b = Math.floor(+$("#rt").value) || 0;
+      S.rg = S.rg || {};
+      if (a > 1 || b) S.rg[cur] = [Math.max(1, a), b];
+      else delete S.rg[cur];
+      save();
+      upd();
+    };
+    $("#opt").onclick = () => {
+      const on = $("#opt").getAttribute("aria-expanded") !== "true";
+      $("#opt").setAttribute("aria-expanded", String(on));
+      $("#opt-b").classList.toggle("on", on);
+    };
+    $("#oc").onclick = () => {
+      if (S.rg) delete S.rg[cur];
+      S.rnd = S.shuf = S.nolim = false;
+      $("#xr").checked = $("#xs").checked = $("#xu").checked = false;
+      $("#xm").disabled = false;
+      $("#rf").value = $("#rt").value = "";
+      save();
+      upd();
+    };
+    $("#rf").oninput = rin;
+    $("#rt").oninput = rin;
     up();
     $("#xs").onchange = (e2) => {
       S.shuf = e2.target.checked;
       save();
+      upd();
     };
     $("#xu").onchange = (e2) => {
       S.nolim = e2.target.checked;
       $("#xm").disabled = S.nolim;
       save();
+      upd();
     };
     $("#xm").disabled = !!S.nolim;
     $("#xr").onchange = (e2) => {
       S.rnd = e2.target.checked;
       save();
+      upd();
     };
     $("#go").onclick = () => start(+$("#xq").value, S.nolim ? 0 : +$("#xm").value, +$("#xp").value);
     if (!STUDY) {
@@ -1424,16 +1553,17 @@ input[type="date"] {
     go("Q" + oid(Q) + "-" + Q.i);
     const x = Q.qs[Q.i], k = x.a.length, sel = Q.a;
     $("#app").innerHTML = `<div class="top"><button id="qh">終了</button><span>${Q.i + 1} / ${Q.qs.length}</span><span>正解 ${Q.c}</span></div>
- <div class="card"><p class="mu">${esc(domJa(x.d))}　${k > 1 ? k + "つ選択" : "1つ選択"}</p><p>${esc(x.q)}</p>${x.o.map((o, i) => {
+ <div class="card"><p class="mu">${esc(domJa(x.d))}　${k > 1 ? k + "つ選択" : "1つ選択"}</p><p>${rich(x.q)}</p>${x.o.map((o, i) => {
       let c = "";
       if (Q.sh) c = x.a.includes(i) ? "ok" : sel.includes(i) ? "ng" : "";
       else if (sel.includes(i)) c = "sel";
-      return `<div class="opt ${c}" data-i="${i}"><b>${L5[i]}</b><span>${esc(o)}</span></div>`;
+      return `<div class="opt ${c}" data-i="${i}"><b>${L5[i]}</b><span>${rich(o)}</span></div>`;
     }).join("")}</div>
- ${Q.sh ? `<div class="card"><p><b style="color:var(${ok(x, sel) ? "--ok" : "--ng"})">${ok(x, sel) ? "正解" : "不正解"}</b></p><div class="ex">${esc(x.e)}</div></div><button class="p" id="qx" style="width:100%">${Q.i < Q.qs.length - 1 ? "次へ" : "結果を見る"}</button>` : `<button class="p" id="qa" style="width:100%" ${sel.length ? "" : "disabled"}>答え合わせ</button>`}`;
+ ${Q.sh ? `<div class="card"><p><b style="color:var(${ok(x, sel) ? "--ok" : "--ng"})">${ok(x, sel) ? "正解" : "不正解"}</b></p><div class="ex">${rich(x.e)}</div></div><button class="p" id="qx" style="width:100%">${Q.i < Q.qs.length - 1 ? "次へ" : "結果を見る"}</button>` : `<button class="p" id="qa" style="width:100%" ${sel.length ? "" : "disabled"}>答え合わせ</button>`}`;
     if (!Q.sh)
       document.querySelectorAll(".opt").forEach(
-        (d) => d.onclick = () => {
+        (d) => d.onclick = (ev) => {
+          if (ev.target.closest("a")) return;
           const i = +d.dataset.i, s = Q.a;
           if (k === 1) Q.a = [i];
           else if (s.includes(i)) Q.a = s.filter((v) => v !== i);
@@ -1578,7 +1708,7 @@ input[type="date"] {
     pz(0);
   }
   function start(n, m, p) {
-    const P = pool();
+    const P = rangePool();
     if (!P.length) {
       $("#pc").textContent = "問題がありません。ページ下の「設定」から、問題パックを読み込んでください。";
       return;
@@ -1604,10 +1734,11 @@ input[type="date"] {
     go("q" + oid(R) + "-" + R.i);
     const x = R.qs[R.i], a = R.ans[R.i], k = x.a.length;
     $("#app").innerHTML = `<div class="top"><span id="tm">${tshow()}</span><span>${R.i + 1} / ${R.qs.length}</span><button id="ps" style="min-height:40px">一時停止</button></div>
- <div class="card"><p class="mu">${k > 1 ? k + "つ選択" : "1つ選択"}</p><p>${esc(x.q)}</p>${x.o.map((o, i) => `<div class="opt ${a.includes(i) ? "sel" : ""}" data-i="${i}"><b>${"ABCDE"[i]}</b><span>${esc(o)}</span></div>`).join("")}</div>
+ <div class="card"><p class="mu">${k > 1 ? k + "つ選択" : "1つ選択"}</p><p>${rich(x.q)}</p>${x.o.map((o, i) => `<div class="opt ${a.includes(i) ? "sel" : ""}" data-i="${i}"><b>${"ABCDE"[i]}</b><span>${rich(o)}</span></div>`).join("")}</div>
  <div class="row"><button id="pv">前へ</button><button id="fg">${R.fl[R.i] ? "フラグ解除" : "フラグ"}</button><button id="ls">一覧</button><button id="nx" class="p">次へ</button></div>`;
     document.querySelectorAll(".opt").forEach(
-      (d) => d.onclick = () => {
+      (d) => d.onclick = (ev) => {
+        if (ev.target.closest("a")) return;
         const i = +d.dataset.i, s = R.ans[R.i];
         if (k === 1) R.ans[R.i] = [i];
         else if (s.includes(i)) R.ans[R.i] = s.filter((v) => v !== i);
@@ -1683,6 +1814,8 @@ input[type="date"] {
     }
   }
   var ok = (x, a) => a.length === x.a.length && x.a.every((v) => a.includes(v));
+  var MAX_DET = 20;
+  var histAll = false;
   function finish() {
     if (!R || R.done) return;
     R.done = 1;
@@ -1700,7 +1833,19 @@ input[type="date"] {
       else addWr(x);
     });
     const pct = Math.round(c / R.qs.length * 100), pass = pct >= R.p;
-    S.hist.push({ t: Date.now(), ex: R.ex, pct, cor: c, tot: R.qs.length, pass, sec, dom: dm });
+    S.hist.push({
+      t: Date.now(),
+      ex: R.ex,
+      pct,
+      cor: c,
+      tot: R.qs.length,
+      pass,
+      sec,
+      dom: dm,
+      // あとで見返せるように、問題・解説・自分の答えをそのまま残す（新しい MAX_DET 回分まで）
+      det: { qs: R.qs.map((x) => ({ ...x })), ans: R.ans.map((a) => a.slice()), p: R.p }
+    });
+    S.hist.filter((h) => h.det).slice(0, -MAX_DET).forEach((h) => delete h.det);
     touch();
     save();
     R.dm = dm;
@@ -1710,15 +1855,30 @@ input[type="date"] {
     R.sec = sec;
     res(false);
   }
-  function res(w) {
-    const L = R.qs.map((x, i) => [x, i]).filter(([x, i]) => !w || !ok(x, R.ans[i]));
-    $("#app").innerHTML = `<div class="hero"><div><h1>結果 <span class="pill">${R.pass ? "合格" : "不合格"}</span></h1><div class="big">${R.pct}<small>%</small></div><p>${R.c} / ${R.qs.length}問正解　合格ライン ${R.p}%　所要時間 ${fmt(R.sec)}</p></div></div>
- <div class="card"><h2>分野ごとの正答率</h2>${dbars(R.dm, R.p, domainNames(R.ex, R.dm), weightsOf(R.ex))}</div>
+  function res(w, V = R) {
+    const L = V.qs.map((x, i) => [x, i]).filter(([x, i]) => !w || !ok(x, V.ans[i]));
+    $("#app").innerHTML = `<div class="hero"><div><h1>結果 <span class="pill">${V.pass ? "合格" : "不合格"}</span></h1><div class="big">${V.pct}<small>%</small></div><p>${V.t ? new Date(V.t).toLocaleDateString("ja-JP") + "　" : ""}${V.c} / ${V.qs.length}問正解　合格ライン ${V.p}%　所要時間 ${fmt(V.sec)}</p></div></div>
+ <div class="card"><h2>分野ごとの正答率</h2>${dbars(V.dm, V.p, domainNames(V.ex, V.dm), weightsOf(V.ex))}</div>
  <div class="row"><button id="wg">${w ? "すべて表示" : "間違いのみ表示"}</button><button id="hm" class="p">ホームへ</button></div>
- ${L.map(([x, i]) => `<div class="card"><p class="mu">問${i + 1}　${esc(domJa(x.d))}　${ok(x, R.ans[i]) ? "正解" : "不正解"}</p><p>${esc(x.q)}</p>${x.o.map((o, j) => `<div class="opt ${x.a.includes(j) ? "ok" : R.ans[i].includes(j) ? "ng" : ""}"><b>${L5[j]}</b><span>${esc(o)}${R.ans[i].includes(j) ? "　←あなたの回答" : ""}</span></div>`).join("")}<div class="ex">${esc(x.e)}</div></div>`).join("")}`;
-    $("#wg").onclick = () => res(!w);
+ ${L.map(([x, i]) => `<div class="card"><p class="mu">問${i + 1}　${esc(domJa(x.d))}　${ok(x, V.ans[i]) ? "正解" : "不正解"}</p><p>${rich(x.q)}</p>${x.o.map((o, j) => `<div class="opt ${x.a.includes(j) ? "ok" : V.ans[i].includes(j) ? "ng" : ""}"><b>${L5[j]}</b><span>${rich(o)}${V.ans[i].includes(j) ? "　←あなたの回答" : ""}</span></div>`).join("")}<div class="ex">${rich(x.e)}</div></div>`).join("")}`;
+    $("#wg").onclick = () => res(!w, V);
     $("#hm").onclick = home;
     window.scrollTo(0, 0);
+  }
+  function viewResult(h) {
+    const V = {
+      t: h.t,
+      ex: h.ex,
+      qs: h.det.qs,
+      ans: h.det.ans,
+      p: h.det.p,
+      pct: h.pct,
+      pass: h.pass,
+      c: h.cor,
+      sec: h.sec,
+      dm: h.dom || {}
+    };
+    res(false, V);
   }
   (async () => {
     if (!document.querySelector('meta[name="viewport"]')) {
