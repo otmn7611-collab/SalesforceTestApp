@@ -1153,7 +1153,7 @@ input[type="date"] {
       EX
     ).length ? Object.keys(EX) : ["（出題データを読み込んでください）"]).map((k) => `<option ${k === cur ? "selected" : ""}>${esc(k)}</option>`).join("")}</select></label><p class="mu" id="nt"></p>
  <div class="row"><label>問題数<input id="xq" type="number" min="1" value="${e.n}"></label><label>時間（分）<input id="xm" type="number" min="1" value="${e.m}"></label><label>合格（%）<input id="xp" type="number" min="1" max="100" value="${e.p}"></label></div>
- <label style="margin-top:12px">出題データ<select id="ps" aria-label="出題データ"></select></label><input type="file" id="pkf" hidden><p class="mu" id="pm" style="margin:6px 0 0"></p>
+ <label style="margin-top:12px">出題データ<select id="ps" aria-label="出題データ"></select></label><input type="file" id="pkf" hidden><button id="pka" style="width:100%;margin-top:8px">JSONファイルを読み込む</button><p class="mu" id="pm" style="margin:6px 0 0"></p>
  <p class="mu" id="pc" style="margin:14px 0 0"></p><div class="bar" style="margin:6px 0 0"><i id="gp"></i></div>
  <div class="optbox"><button class="acc-h" id="opt" aria-expanded="false" aria-controls="opt-b"><b style="font-size:15px">オプション</b><span id="os"></span><span class="chev" aria-hidden="true"></span></button>
  <div class="acc-b" id="opt-b"><div><p class="mu" style="margin:12px 0 6px">出題範囲（問題番号）</p><div style="display:flex;align-items:center;gap:10px"><input id="rf" type="number" min="1" inputmode="numeric" placeholder="最初" aria-label="出題範囲の開始番号"><span aria-hidden="true">〜</span><input id="rt" type="number" min="1" inputmode="numeric" placeholder="最後" aria-label="出題範囲の終了番号"></div><p class="mu" style="margin:4px 0 0">空欄＝すべて。番号は、出題データに並んでいる順です。</p>
@@ -1506,23 +1506,19 @@ input[type="date"] {
         fail(e);
       }
     };
-    const ADD = "__add";
     const fillSets = () => {
       const ps = $("#ps");
       const names = setNames(cur);
-      ps.innerHTML = (names.length ? names.map(
+      ps.innerHTML = names.length ? names.map(
         (n) => `<option value="${esc(n)}" ${n === S.cs[cur] ? "selected" : ""}>${esc(n)}（${setCount(cur, n)}問）</option>`
-      ).join("") : '<option value="" selected>（出題データがありません）</option>') + `<option value="${ADD}">＋ 出題データ（JSONファイル）を選ぶ…</option>`;
+      ).join("") : '<option value="" selected>（出題データがありません）</option>';
+      ps.disabled = !names.length;
     };
     window.fs = fillSets;
     fillSets();
+    $("#pka").onclick = () => $("#pkf").click();
     $("#ps").onchange = (e) => {
       const v = e.target.value;
-      if (v === ADD) {
-        fillSets();
-        $("#pkf").click();
-        return;
-      }
       if (!v) return;
       useSet(cur, v);
       packMsg = "";
