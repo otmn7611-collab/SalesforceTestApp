@@ -873,6 +873,8 @@ input[type="date"] {
   S.cs = S.cs || {};
   S.hist = S.hist || [];
   S.wr = S.wr || {};
+  S.rv = S.rv || {};
+  S.rvc = S.rvc || 0;
   S.exd = S.exd || {};
   S.exams = S.exams || {};
   S.act = S.act || [];
@@ -1088,6 +1090,21 @@ input[type="date"] {
     return at.concat(names.filter((d) => !(g[d] && g[d][1]))).slice(0, n);
   }
   var getExd = () => S.exd[cur] !== void 0 ? S.exd[cur] : cur === "Salesforce 認定 Platform アドミニストレーター" ? "2026-11-14" : "";
+  function rvInfo() {
+    const c = rangePool().filter((x) => S.wr[qk(x)] > 0), u = c.filter((x) => (S.rv[qk(x)] || 0) < S.rvc || !S.rv[qk(x)]);
+    return { c, u: u.length ? u : c, fresh: !u.length };
+  }
+  function review() {
+    const { c, u, fresh } = rvInfo();
+    if (!c.length) return;
+    if (fresh) S.rvc = Date.now();
+    const qs = u.slice().sort((a, b) => S.wr[qk(b)] - S.wr[qk(a)] || Math.random() - 0.5).slice(0, 10);
+    const t = Date.now() + 1;
+    qs.forEach((x) => S.rv[qk(x)] = t);
+    save();
+    Q = { qs: shuffled(qs).map(present), i: 0, a: [], sh: 0, c: 0, ex: cur, dm: {} };
+    qq();
+  }
   function train() {
     const P = pool();
     if (!P.length) return;
@@ -1147,7 +1164,7 @@ input[type="date"] {
  </div>
  <button class="go" id="go" disabled>模擬試験を始める</button>
  </div><div class="col">
- <section class="sec"><span class="eb">CONTENTS</span><h2>学習メニュー</h2><i class="rule"></i><div class="toc"><p class="gl">問題を解く</p><div class="mi"><div class="mh"><div class="mt"><b>一問一答</b><small id="qm"></small></div><div class="ma"><input id="qc" type="number" min="1" value="1" aria-label="出題数" style="width:64px"><button class="p" id="qs">始める</button></div><button class="inf" data-i="q" aria-label="一問一答の説明" aria-expanded="false">i</button></div><div class="if" id="in-q"><div><p>作成済みの問題からランダムに出題します。1問ごとに答え合わせと解説が出ます。出題数の上限は、作成済みの問題数です。</p></div></div></div><p class="gl">苦手分野</p><div class="mi"><div class="mh"><div class="mt"><b>対策問題を解く</b><small>弱点から最大10問</small></div><div class="ma"><button class="p" id="tr">始める</button></div><button class="inf" data-i="tr" aria-label="対策問題を解くの説明" aria-expanded="false">i</button></div><div class="if" id="in-tr"><div><p>作成済みの問題から、正答率が低い分野の問題と、過去に間違えた問題を優先して、最大10問を出します。</p></div></div></div></div></section>
+ <section class="sec"><span class="eb">CONTENTS</span><h2>学習メニュー</h2><i class="rule"></i><div class="toc"><p class="gl">問題を解く</p><div class="mi"><div class="mh"><div class="mt"><b>全問を1問ずつ解く</b><small id="am"></small></div><div class="ma"><button id="ar" style="display:none">最初から</button><button class="p" id="as">始める</button></div><button class="inf" data-i="a" aria-label="全問を1問ずつ解くの説明" aria-expanded="false">i</button></div><div class="if" id="in-a"><div><p>出題データの全問を、1問ごとに答え合わせと解説を見ながら通しで解きます。順番は、オプションの「ランダム出題」がオフなら番号順、オンならランダムです。出題範囲も、オプションの設定が使われます。途中でやめても、続きから再開できます。結果は成績の履歴には残らず、間違えた問題だけが、苦手問題の集計に反映されます。</p></div></div></div><div class="mi"><div class="mh"><div class="mt"><b>一問一答</b><small id="qm"></small></div><div class="ma"><input id="qc" type="number" min="1" value="1" aria-label="出題数" style="width:64px"><button class="p" id="qs">始める</button></div><button class="inf" data-i="q" aria-label="一問一答の説明" aria-expanded="false">i</button></div><div class="if" id="in-q"><div><p>作成済みの問題からランダムに出題します。1問ごとに答え合わせと解説が出ます。出題数の上限は、作成済みの問題数です。</p></div></div></div><p class="gl">苦手分野</p><div class="mi"><div class="mh"><div class="mt"><b>対策問題を解く</b><small>弱点から最大10問</small></div><div class="ma"><button class="p" id="tr">始める</button></div><button class="inf" data-i="tr" aria-label="対策問題を解くの説明" aria-expanded="false">i</button></div><div class="if" id="in-tr"><div><p>作成済みの問題から、正答率が低い分野の問題と、過去に間違えた問題を優先して、最大10問を出します。</p></div></div></div><div class="mi"><div class="mh"><div class="mt"><b>間違えた問題を見直す</b><small id="rvm"></small></div><div class="ma"><button class="p" id="rv">始める</button></div><button class="inf" data-i="rv" aria-label="間違えた問題を見直すの説明" aria-expanded="false">i</button></div><div class="if" id="in-rv"><div><p>間違えて、まだ克服していない問題を、10問ずつ出します。一巡するまで、同じ問題は出ません。誤答が多い問題から先に出ます。見直しで正解すると、その問題は対象から外れます（また間違えると、戻ります）。出題範囲のオプションも使われます。</p></div></div></div></div></section>
  <section class="sec" id="st"></section>
   <section class="sec"><span class="eb">RECORDS</span><h2>成績</h2><i class="rule"></i><p class="mu" id="hx" style="margin:0 0 8px"></p><div id="hl"></div><div class="row" id="rs"></div>
   <p class="mu" id="xt"></p><div class="row"><button id="xo">成績を書き出す</button><button id="xi">成績を読み込む</button></div><input type="file" id="xf" hidden><p class="mu" id="xm2"></p></section>
@@ -1244,6 +1261,14 @@ input[type="date"] {
       $("#qc").max = hl;
       if (!+$("#qc").value || +$("#qc").value > hl) $("#qc").value = hl;
       $("#qs").disabled = !hl;
+      const sv = allSaved(), rn = rangePool().length;
+      $("#am").textContent = sv ? `${sv.idx.length}問中 ${sv.i}問まで終了` : `${rn}問を${S.rnd ? "ランダム" : "番号"}順で`;
+      $("#as").textContent = sv ? "続きから" : "始める";
+      $("#ar").style.display = sv ? "" : "none";
+      $("#as").disabled = !rn;
+      const ri = rvInfo();
+      $("#rvm").textContent = ri.c.length ? `対象${ri.c.length}問（今回の一巡で残り${ri.u.length}問）` : "対象の問題はありません";
+      $("#rv").disabled = !ri.c.length;
       dash();
     };
     window.upd = upd;
@@ -1398,6 +1423,8 @@ input[type="date"] {
       };
     }
     $("#qs").onclick = () => startQ(+$("#qc").value);
+    $("#as").onclick = () => startAll(!!allSaved());
+    $("#ar").onclick = () => startAll(false);
     document.querySelectorAll(".inf").forEach(
       (b) => b.onclick = () => {
         const q2 = $("#in-" + b.dataset.i);
@@ -1416,6 +1443,7 @@ input[type="date"] {
       };
     }
     $("#tr").onclick = train;
+    $("#rv").onclick = review;
     packUi();
     $("#pks").onclick = makePack;
   }
@@ -1667,6 +1695,58 @@ input[type="date"] {
     Q = { qs, i: 0, a: [], sh: 0, c: 0, ex: cur, dm: {} };
     qq();
   }
+  var ALL = "sfall";
+  function allSaved() {
+    try {
+      const d = JSON.parse(localStorage.getItem(ALL) || "null"), n = pool().length;
+      if (!d || d.ex !== cur || d.set !== (S.cs[cur] || "") || !Array.isArray(d.idx) || !d.idx.length || d.idx.some((v) => !Number.isInteger(v) || v < 0 || v >= n) || !(d.i >= 0 && d.i < d.idx.length))
+        return null;
+      return d;
+    } catch (e) {
+      return null;
+    }
+  }
+  var allClear = () => {
+    try {
+      localStorage.removeItem(ALL);
+    } catch (e) {
+    }
+  };
+  function allSave(i) {
+    try {
+      localStorage.setItem(
+        ALL,
+        JSON.stringify({ ex: cur, set: S.cs[cur] || "", idx: Q.idx, i, c: Q.c, dm: Q.dm })
+      );
+    } catch (e) {
+    }
+  }
+  function startAll(resume2) {
+    const sv = resume2 ? allSaved() : null;
+    let idx;
+    if (sv) idx = sv.idx;
+    else {
+      const [a, b] = rangeOf();
+      idx = [];
+      for (let k = a - 1; k < b; k++) idx.push(k);
+      if (S.rnd) idx = shuffled(idx);
+    }
+    if (!idx.length) return;
+    const P = pool();
+    Q = {
+      qs: idx.map((k) => present(P[k])),
+      idx,
+      all: 1,
+      i: sv ? sv.i : 0,
+      a: [],
+      sh: 0,
+      c: sv ? sv.c : 0,
+      ex: cur,
+      dm: sv ? sv.dm : {}
+    };
+    if (!sv) allSave(0);
+    qq();
+  }
   function qq() {
     go("Q" + oid(Q) + "-" + Q.i);
     const x = Q.qs[Q.i], k = x.a.length, sel = Q.a;
@@ -1701,6 +1781,10 @@ input[type="date"] {
           qq();
         } else {
           const pc = Math.round(Q.c / Q.qs.length * 100), p = (EX[Q.ex] || {}).p || 65;
+          if (Q.all) {
+            Q.done = 1;
+            allClear();
+          }
           if (!Q.done) {
             Q.done = 1;
             S.hist.push({
@@ -1718,8 +1802,8 @@ input[type="date"] {
             save();
           }
           go("Qr" + oid(Q));
-          $("#app").innerHTML = `<div class="hero"><div><h1>一問一答の結果</h1><div class="big">${pc}<small>%</small></div><p>${Q.c} / ${Q.qs.length}問正解</p></div></div><div class="card"><h2>分野ごとの正答率</h2>${dbars(Q.dm, p, domainNames(Q.ex, Q.dm), weightsOf(Q.ex))}</div><div class="row"><button id="qr">もう一度</button><button class="p" id="qh2">ホームへ</button></div>`;
-          $("#qr").onclick = () => startQ(Q.qs.length);
+          $("#app").innerHTML = `<div class="hero"><div><h1>${Q.all ? "全問の結果" : "一問一答の結果"}</h1><div class="big">${pc}<small>%</small></div><p>${Q.c} / ${Q.qs.length}問正解</p></div></div><div class="card"><h2>分野ごとの正答率</h2>${dbars(Q.dm, p, domainNames(Q.ex, Q.dm), weightsOf(Q.ex))}</div><div class="row"><button id="qr">もう一度</button><button class="p" id="qh2">ホームへ</button></div>`;
+          $("#qr").onclick = () => Q.all ? startAll(false) : startQ(Q.qs.length);
           $("#qh2").onclick = home;
         }
       };
@@ -1733,6 +1817,7 @@ input[type="date"] {
           d[0]++;
           clrWr(x);
         } else addWr(x);
+        if (Q.all && Q.i + 1 < Q.qs.length) allSave(Q.i + 1);
         touch();
         qq();
       };
