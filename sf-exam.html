@@ -171,7 +171,14 @@ button.go,
   font-weight: 800;
   font-size: 16px;
   letter-spacing: 0.08em;
-  margin: 28px 0;
+  margin: 28px 0 12px;
+}
+button.go2 {
+  background: var(--ink);
+  margin: 0 0 8px;
+}
+button.go2:disabled {
+  opacity: 0.4;
 }
 input,
 textarea,
@@ -1163,8 +1170,10 @@ input[type="date"] {
  <button id="oc" style="width:100%;margin-top:14px">オプションをすべて解除</button></div></div></div>
  </div>
  <button class="go" id="go" disabled>模擬試験を始める</button>
+ <button class="go go2" id="as">全問を1問ずつ解く</button>
+ <p class="mu" id="am" style="margin:0 0 6px;text-align:center"></p><button id="ar" style="display:none;width:100%;margin-bottom:28px">最初から解き直す</button>
  </div><div class="col">
- <section class="sec"><span class="eb">CONTENTS</span><h2>学習メニュー</h2><i class="rule"></i><div class="toc"><p class="gl">問題を解く</p><div class="mi"><div class="mh"><div class="mt"><b>全問を1問ずつ解く</b><small id="am"></small></div><div class="ma"><button id="ar" style="display:none">最初から</button><button class="p" id="as">始める</button></div><button class="inf" data-i="a" aria-label="全問を1問ずつ解くの説明" aria-expanded="false">i</button></div><div class="if" id="in-a"><div><p>出題データの全問を、1問ごとに答え合わせと解説を見ながら通しで解きます。順番は、オプションの「ランダム出題」がオフなら番号順、オンならランダムです。出題範囲も、オプションの設定が使われます。途中でやめても、続きから再開できます。結果は成績の履歴には残らず、間違えた問題だけが、苦手問題の集計に反映されます。</p></div></div></div><div class="mi"><div class="mh"><div class="mt"><b>一問一答</b><small id="qm"></small></div><div class="ma"><input id="qc" type="number" min="1" value="1" aria-label="出題数" style="width:64px"><button class="p" id="qs">始める</button></div><button class="inf" data-i="q" aria-label="一問一答の説明" aria-expanded="false">i</button></div><div class="if" id="in-q"><div><p>作成済みの問題からランダムに出題します。1問ごとに答え合わせと解説が出ます。出題数の上限は、作成済みの問題数です。</p></div></div></div><p class="gl">苦手分野</p><div class="mi"><div class="mh"><div class="mt"><b>対策問題を解く</b><small>弱点から最大10問</small></div><div class="ma"><button class="p" id="tr">始める</button></div><button class="inf" data-i="tr" aria-label="対策問題を解くの説明" aria-expanded="false">i</button></div><div class="if" id="in-tr"><div><p>作成済みの問題から、正答率が低い分野の問題と、過去に間違えた問題を優先して、最大10問を出します。</p></div></div></div><div class="mi"><div class="mh"><div class="mt"><b>間違えた問題を見直す</b><small id="rvm"></small></div><div class="ma"><button class="p" id="rv">始める</button></div><button class="inf" data-i="rv" aria-label="間違えた問題を見直すの説明" aria-expanded="false">i</button></div><div class="if" id="in-rv"><div><p>間違えて、まだ克服していない問題を、10問ずつ出します。一巡するまで、同じ問題は出ません。誤答が多い問題から先に出ます。見直しで正解すると、その問題は対象から外れます（また間違えると、戻ります）。出題範囲のオプションも使われます。</p></div></div></div></div></section>
+ <section class="sec"><span class="eb">CONTENTS</span><h2>学習メニュー</h2><i class="rule"></i><div class="toc"><p class="gl">問題を解く</p><div class="mi"><div class="mh"><div class="mt"><b>一問一答</b><small id="qm"></small></div><div class="ma"><input id="qc" type="number" min="1" value="1" aria-label="出題数" style="width:64px"><button class="p" id="qs">始める</button></div><button class="inf" data-i="q" aria-label="一問一答の説明" aria-expanded="false">i</button></div><div class="if" id="in-q"><div><p>作成済みの問題からランダムに出題します。1問ごとに答え合わせと解説が出ます。出題数の上限は、作成済みの問題数です。</p></div></div></div><p class="gl">苦手分野</p><div class="mi"><div class="mh"><div class="mt"><b>対策問題を解く</b><small>弱点から最大10問</small></div><div class="ma"><button class="p" id="tr">始める</button></div><button class="inf" data-i="tr" aria-label="対策問題を解くの説明" aria-expanded="false">i</button></div><div class="if" id="in-tr"><div><p>作成済みの問題から、正答率が低い分野の問題と、過去に間違えた問題を優先して、最大10問を出します。</p></div></div></div><div class="mi"><div class="mh"><div class="mt"><b>間違えた問題を見直す</b><small id="rvm"></small></div><div class="ma"><button class="p" id="rv">始める</button></div><button class="inf" data-i="rv" aria-label="間違えた問題を見直すの説明" aria-expanded="false">i</button></div><div class="if" id="in-rv"><div><p>間違えて、まだ克服していない問題を、10問ずつ出します。一巡するまで、同じ問題は出ません。誤答が多い問題から先に出ます。見直しで正解すると、その問題は対象から外れます（また間違えると、戻ります）。出題範囲のオプションも使われます。</p></div></div></div></div></section>
  <section class="sec" id="st"></section>
   <section class="sec"><span class="eb">RECORDS</span><h2>成績</h2><i class="rule"></i><p class="mu" id="hx" style="margin:0 0 8px"></p><div id="hl"></div><div class="row" id="rs"></div>
   <p class="mu" id="xt"></p><div class="row"><button id="xo">成績を書き出す</button><button id="xi">成績を読み込む</button></div><input type="file" id="xf" hidden><p class="mu" id="xm2"></p></section>
@@ -1262,8 +1271,8 @@ input[type="date"] {
       if (!+$("#qc").value || +$("#qc").value > hl) $("#qc").value = hl;
       $("#qs").disabled = !hl;
       const sv = allSaved(), rn = rangePool().length;
-      $("#am").textContent = sv ? `${sv.idx.length}問中 ${sv.i}問まで終了` : `${rn}問を${S.rnd ? "ランダム" : "番号"}順で`;
-      $("#as").textContent = sv ? "続きから" : "始める";
+      $("#am").textContent = sv ? `${sv.idx.length}問中 ${sv.i}問まで終了（解説つき・成績の履歴には残りません）` : `${rn}問を${S.rnd ? "ランダム" : "番号"}順で、1問ずつ解説つき（成績の履歴には残りません）`;
+      $("#as").textContent = sv ? "全問を1問ずつ解く（続きから）" : "全問を1問ずつ解く";
       $("#ar").style.display = sv ? "" : "none";
       $("#as").disabled = !rn;
       const ri = rvInfo();
