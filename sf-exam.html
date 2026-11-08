@@ -46,7 +46,7 @@ body::before {
 main {
   max-width: 720px;
   margin: 0 auto;
-  padding-block: 0 56px;
+  padding-block: 0 calc(140px + env(safe-area-inset-bottom, 0px));
   padding-left: max(24px, env(safe-area-inset-left, 0px));
   padding-right: max(24px, env(safe-area-inset-right, 0px));
 }
@@ -854,7 +854,7 @@ input[type="date"] {
 
   // src/app.ts
   var STUDY = typeof claude === "undefined";
-  var HAVE = "登録済み";
+  var HAVE = "出題データ";
   var EX = {};
   var EXPK = "sfexp";
   var S = { pool: {}, hist: [], wr: {}, exd: {}, act: [], scn: 0, rnd: false };
@@ -1134,13 +1134,12 @@ input[type="date"] {
  <section class="sec" id="td"></section>
  <div class="card"><span class="eb">SETTINGS</span><h2>試験名</h2><label><select id="xn" aria-label="試験名">${(Object.keys(
       EX
-    ).length ? Object.keys(EX) : ["（問題パックを読み込んでください）"]).map((k) => `<option ${k === cur ? "selected" : ""}>${esc(k)}</option>`).join("")}</select></label><p class="mu" id="nt"></p>
- <label style="margin-top:12px">問題セット<select id="ps" aria-label="問題セット"></select></label>
- <button id="pk" style="width:100%;margin-top:8px">問題ファイル（JSON）を選ぶ</button><input type="file" id="pkf" hidden><p class="mu" id="pm" style="margin:6px 0 0"></p>
+    ).length ? Object.keys(EX) : ["（出題データを読み込んでください）"]).map((k) => `<option ${k === cur ? "selected" : ""}>${esc(k)}</option>`).join("")}</select></label><p class="mu" id="nt"></p>
  <div class="row"><label>問題数<input id="xq" type="number" min="1" value="${e.n}"></label><label>時間（分）<input id="xm" type="number" min="1" value="${e.m}"></label><label>合格（%）<input id="xp" type="number" min="1" max="100" value="${e.p}"></label></div>
+ <label style="margin-top:12px">出題データ<select id="ps" aria-label="出題データ"></select></label><input type="file" id="pkf" hidden><p class="mu" id="pm" style="margin:6px 0 0"></p>
  <p class="mu" id="pc" style="margin:14px 0 0"></p><div class="bar" style="margin:6px 0 0"><i id="gp"></i></div>
  <div class="optbox"><button class="acc-h" id="opt" aria-expanded="false" aria-controls="opt-b"><b style="font-size:15px">オプション</b><span id="os"></span><span class="chev" aria-hidden="true"></span></button>
- <div class="acc-b" id="opt-b"><div><p class="mu" style="margin:12px 0 6px">出題範囲（問題番号）</p><div style="display:flex;align-items:center;gap:10px"><input id="rf" type="number" min="1" inputmode="numeric" placeholder="最初" aria-label="出題範囲の開始番号"><span aria-hidden="true">〜</span><input id="rt" type="number" min="1" inputmode="numeric" placeholder="最後" aria-label="出題範囲の終了番号"></div><p class="mu" style="margin:4px 0 0">空欄＝すべて。番号は、問題パックに並んでいる順です。</p>
+ <div class="acc-b" id="opt-b"><div><p class="mu" style="margin:12px 0 6px">出題範囲（問題番号）</p><div style="display:flex;align-items:center;gap:10px"><input id="rf" type="number" min="1" inputmode="numeric" placeholder="最初" aria-label="出題範囲の開始番号"><span aria-hidden="true">〜</span><input id="rt" type="number" min="1" inputmode="numeric" placeholder="最後" aria-label="出題範囲の終了番号"></div><p class="mu" style="margin:4px 0 0">空欄＝すべて。番号は、出題データに並んでいる順です。</p>
   <label style="display:flex;align-items:center;gap:10px;margin-top:12px;font-size:15px"><input type="checkbox" id="xr" ${S.rnd ? "checked" : ""} style="width:22px;height:22px;min-height:0;margin:0;flex:none">ランダムに出題する<small class="mu" style="margin-left:auto">オフ＝ファイルの順</small></label>
  <label style="display:flex;align-items:center;gap:10px;margin-top:8px;font-size:15px"><input type="checkbox" id="xs" ${S.shuf ? "checked" : ""} style="width:22px;height:22px;min-height:0;margin:0;flex:none">選択肢の順番もランダムにする<small class="mu" style="margin-left:auto">毎回変わる</small></label>
  <label style="display:flex;align-items:center;gap:10px;margin-top:8px;font-size:15px"><input type="checkbox" id="xu" ${S.nolim ? "checked" : ""} style="width:22px;height:22px;min-height:0;margin:0;flex:none">制限時間なし<small class="mu" style="margin-left:auto">経過時間だけ計る</small></label>
@@ -1152,11 +1151,11 @@ input[type="date"] {
  <section class="sec" id="st"></section>
   <section class="sec"><span class="eb">RECORDS</span><h2>成績</h2><i class="rule"></i><p class="mu" id="hx" style="margin:0 0 8px"></p><div id="hl"></div><div class="row" id="rs"></div>
   <p class="mu" id="xt"></p><div class="row"><button id="xo">成績を書き出す</button><button id="xi">成績を読み込む</button></div><input type="file" id="xf" hidden><p class="mu" id="xm2"></p></section>
-  <section class="sec admin"><span class="eb">ADMIN</span><button class="acc-h" id="acc" aria-expanded="${dataOpen}" aria-controls="acc-b"><b>設定</b><span class="chev" aria-hidden="true"></span></button><p class="mu" style="margin:0">問題パックの保存・読み込み${STUDY ? "" : "と、問題の作成"}です。</p>
+  <section class="sec admin"><span class="eb">ADMIN</span><button class="acc-h" id="acc" aria-expanded="${dataOpen}" aria-controls="acc-b"><b>設定</b><span class="chev" aria-hidden="true"></span></button><p class="mu" style="margin:0">出題データの保存${STUDY ? "" : "と、問題の作成"}です。</p>
  <div class="acc-b ${dataOpen ? "on" : ""}" id="acc-b"><div>
- <div class="sub"><div class="mh" style="padding:0"><h3 style="flex:1;margin:0">問題パック</h3><button class="inf" data-i="dr" aria-label="問題パックの説明" aria-expanded="false">i</button></div><div class="if" id="in-dr"><div><p>問題ファイル（問題パック）は、問題と試験の定義だけを入れたJSONファイルです。ファイルを選ぶと、ファイル名の「問題セット」として、このアプリの中に取り込みます。元のファイルは、読むだけで書き換えません。同じ名前のファイルをもう一度選ぶと、そのセットの内容を更新します。セットは、ページ上の「問題セット」で切り替えられます。成績は試験ごとに残り、セットを切り替えても消えません（成績にセット名も記録します）。ここの「保存」は、いま使っている問題を新しいファイルに書き出します。家族や友だちに渡すときは、このファイルをAirDropやLINE、メールなどで送ってください。成績は入りません。</p></div></div>
- <button id="pks" style="width:100%">いま使っている問題を、ファイルに保存</button><div id="pdr"></div><div id="pl"></div></div>
- ${STUDY ? "" : `<button class="p" id="gb" style="width:100%;margin-top:14px">問題を作成する（AI）</button><div id="gc"></div>`}
+ <div class="sub"><div class="mh" style="padding:0"><h3 style="flex:1;margin:0">出題データ</h3><button class="inf" data-i="dr" aria-label="出題データの説明" aria-expanded="false">i</button></div><div class="if" id="in-dr"><div><p>出題データは、問題と試験の定義だけを入れたJSONファイルです。ページ上の「出題データ」の一番下から、ファイルを選んで読み込みます。ファイル名の出題データとして、このアプリの中に取り込みます。元のファイルは、読むだけで書き換えません。同じ名前のファイルをもう一度選ぶと、その出題データの内容を更新します。出題データは、同じ欄で切り替えられます。成績は試験ごとに残り、出題データを切り替えても消えません（成績に、使った出題データの名前も記録します）。ここの「保存」は、いま使っている出題データを新しいファイルに書き出します。家族や友だちに渡すときは、このファイルをAirDropやLINE、メールなどで送ってください。成績は入りません。</p></div></div>
+ <button id="pks" style="width:100%">いま使っている出題データを、ファイルに保存</button><div id="pdr"></div><div id="pl"></div></div>
+ ${STUDY ? "" : `<button class="p" id="gb" style="width:100%;margin-top:14px">問題を作成する（AI）</button><p class="mu" style="margin:6px 0 0">Claudeにつながっているときだけ使えます。</p><div id="gc"></div>`}
  <p class="mu" id="gm"></p><p class="mu" id="sk" style="margin:10px 0 0"></p></div></div></section>
  </div></div>`;
     {
@@ -1195,7 +1194,7 @@ input[type="date"] {
         ((/* @__PURE__ */ new Date(exd + "T00:00:00")).getTime() - new Date((/* @__PURE__ */ new Date()).toDateString()).getTime()) / 864e5
       ) : null, w = wkd(2);
       el.innerHTML = `<span class="eb">COUNTDOWN</span><h2>受験日まで</h2><i class="rule"></i><div class="row" style="align-items:end"><div class="big">${days === null ? "—" : days < 0 ? "終了" : days === 0 ? "今日" : days + "<small>日</small>"}</div><label>受験日<input id="ed" type="date" value="${esc(exd)}"></label></div>
-  <p class="mu">${!P ? STUDY ? "問題パックを読み込むと、受験日までの目安が出ます。" : "問題を作成すると、受験日までの目安が出ます。" : days > 0 ? `${HAVE}の${P}問を受験日までに一周するには、1日約${Math.min(60, Math.max(5, Math.ceil(P / days)))}問が目安です。` : ""}</p>
+  <p class="mu">${!P ? "出題データを読み込むと、受験日までの目安が出ます。" : days > 0 ? `${HAVE}の${P}問を受験日までに一周するには、1日約${Math.min(60, Math.max(5, Math.ceil(P / days)))}問が目安です。` : ""}</p>
 `;
       $("#ed").onchange = () => {
         S.exd[cur] = $("#ed").value;
@@ -1228,7 +1227,7 @@ input[type="date"] {
     };
     const upd = () => {
       const n = +$("#xq").value || 0, hl = pool().length, h = rangePool().length, [ra, rb2] = rangeOf();
-      $("#pc").textContent = ranged() && h >= n ? `${HAVE} ${hl}問のうち、${ra}〜${rb2}問目（${h}問）から${n}問を出題します` : ranged() ? `範囲 ${ra}〜${rb2}問目は${h}問です。出題数 ${n}問に足りません（範囲を広げるか、出題数を減らしてください）` : h > n ? `${HAVE} ${h}問（必要な${n}問はそろっています。模擬試験ではこの中から${n}問を出題します）` : `問題 ${h} / ${n}問（不足分は、ページ下の「設定」で${STUDY ? "パックを読み込めます" : "読み込み・作成できます"}）`;
+      $("#pc").textContent = ranged() && h >= n ? `${HAVE} ${hl}問のうち、${ra}〜${rb2}問目（${h}問）から${n}問を出題します` : ranged() ? `範囲 ${ra}〜${rb2}問目は${h}問です。出題数 ${n}問に足りません（範囲を広げるか、出題数を減らしてください）` : h > n ? `${HAVE} ${h}問（必要な${n}問はそろっています。模擬試験ではこの中から${n}問を出題します）` : (hl ? `この出題データは${h}問で、出題数${n}問に足りません。出題数を減らすか、問題数の多い出題データに切り替えてください。` : "出題データがありません。「出題データ」で、JSONファイルを読み込んでください。") + (STUDY || !hl ? "" : "（「設定」で、AIが不足分を作成することもできます）");
       const tags = [
         ranged() ? `範囲 ${ra}〜${rb2}` : "",
         S.rnd ? "ランダム出題" : "",
@@ -1268,7 +1267,7 @@ input[type="date"] {
       const L = S.hist.filter((h) => h.ex === cur);
       $("#hx").textContent = `${cur}の成績です。成績は、試験ごとに分けて残しています。`;
       $("#hl").innerHTML = L.length ? `<div class="toc">${L.slice(histAll ? -MAX_DET * 2 : -5).reverse().map(
-        (h) => `<div class="mi"><div class="mh"><div class="mt"><b>${new Date(h.t).toLocaleDateString("ja-JP")}</b><small>${h.cor}/${h.tot}問　${h.k === "q" ? "一問一答" : (h.pass ? "合格" : "不合格") + "　" + fmt(h.sec)}</small>${h.set ? `<small>問題セット：${esc(h.set)}</small>` : ""}</div><b class="pc">${h.pct}<small>%</small></b></div>${h.det ? `<div class="row" style="margin-top:8px"><button class="hv" data-t="${h.t}" style="min-height:40px">問題と解説を見る</button></div>` : ""}</div>`
+        (h) => `<div class="mi"><div class="mh"><div class="mt"><b>${new Date(h.t).toLocaleDateString("ja-JP")}</b><small>${h.cor}/${h.tot}問　${h.k === "q" ? "一問一答" : (h.pass ? "合格" : "不合格") + "　" + fmt(h.sec)}</small>${h.set ? `<small>出題データ：${esc(h.set)}</small>` : ""}</div><b class="pc">${h.pct}<small>%</small></b></div>${h.det ? `<div class="row" style="margin-top:8px"><button class="hv" data-t="${h.t}" style="min-height:40px">問題と解説を見る</button></div>` : ""}</div>`
       ).join(
         ""
       )}</div>${L.length > 5 ? `<div class="row"><button id="hall">${histAll ? "直近5回だけ表示" : "すべての回を表示"}</button></div>` : ""}` : '<p class="mu">この試験の記録は、まだありません。</p>';
@@ -1423,8 +1422,8 @@ input[type="date"] {
   var PACKF = "sf-pack";
   var packMsg = "";
   function importPack(d, fname) {
-    if (!okD(d)) throw new Error("問題パックの形式ではありません。");
-    const name = fname.replace(/\.json$/i, "").trim() || "問題セット";
+    if (!okD(d)) throw new Error("出題データの形式ではありません。");
+    const name = fname.replace(/\.json$/i, "").trim() || "出題データ";
     ensureSets();
     const merged = {};
     for (const k in d.pool) {
@@ -1460,12 +1459,11 @@ input[type="date"] {
   }
   function packUi() {
     const done = (r) => {
-      packMsg = `「${r.name}」（${r.n}問）を読み込み、この問題セットを使います。`;
+      packMsg = `「${r.name}」（${r.n}問）を読み込み、この出題データを使います。`;
       home();
     };
     const fail = (e) => $("#pm").textContent = errMsg(e);
     $("#pm").textContent = packMsg;
-    $("#pk").onclick = () => $("#pkf").click();
     $("#pkf").onchange = async (ev) => {
       const inp = ev.target;
       const f = inp.files[0];
@@ -1480,18 +1478,25 @@ input[type="date"] {
         fail(e);
       }
     };
+    const ADD = "__add";
     const fillSets = () => {
       const ps = $("#ps");
       const names = setNames(cur);
-      ps.innerHTML = names.length ? names.map(
+      ps.innerHTML = (names.length ? names.map(
         (n) => `<option value="${esc(n)}" ${n === S.cs[cur] ? "selected" : ""}>${esc(n)}（${setCount(cur, n)}問）</option>`
-      ).join("") : "<option>（まだありません。下のボタンで問題ファイルを選んでください）</option>";
-      ps.disabled = !names.length;
+      ).join("") : '<option value="" selected>（出題データがありません）</option>') + `<option value="${ADD}">＋ 出題データ（JSONファイル）を選ぶ…</option>`;
     };
     window.fs = fillSets;
     fillSets();
     $("#ps").onchange = (e) => {
-      useSet(cur, e.target.value);
+      const v = e.target.value;
+      if (v === ADD) {
+        fillSets();
+        $("#pkf").click();
+        return;
+      }
+      if (!v) return;
+      useSet(cur, v);
       packMsg = "";
       save();
       home();
@@ -1502,7 +1507,7 @@ input[type="date"] {
         box.innerHTML = "";
         return;
       }
-      box.innerHTML = c ? `<div class="row"><button id="pd1" style="color:var(--ng);border-color:var(--ng)">本当に削除する</button><button id="pd0">やめる</button></div>` : `<button id="pd2" style="width:100%;margin-top:8px">いま使っている問題セットを削除</button>`;
+      box.innerHTML = c ? `<div class="row"><button id="pd1" style="color:var(--ng);border-color:var(--ng)">本当に削除する</button><button id="pd0">やめる</button></div>` : `<button id="pd2" style="width:100%;margin-top:8px">いま使っている出題データを削除</button>`;
       if (c) {
         $("#pd0").onclick = () => dr(0);
         $("#pd1").onclick = () => {
@@ -1517,7 +1522,7 @@ input[type="date"] {
     fetch("packs/index.json").then((r) => r.ok ? r.json() : null).then((list2) => {
       if (!Array.isArray(list2) || !list2.length || !$("#pl")) return;
       list2 = list2.filter((x) => x && /^[^/\\]+\.json$/.test(String(x.file)));
-      $("#pl").innerHTML = '<p class="gl">配布中のパック</p>' + list2.map(
+      $("#pl").innerHTML = '<p class="gl">配布中の出題データ</p>' + list2.map(
         (x, i) => `<div class="mi"><div class="mh"><div class="mt"><b>${esc(x.title)}</b><small>${esc(x.exam || "")}${x.count ? "　" + x.count + "問" : ""}</small></div><button class="pf" data-i="${i}">読み込む</button></div></div>`
       ).join("");
       document.querySelectorAll("#pl .pf").forEach(
@@ -1525,7 +1530,7 @@ input[type="date"] {
           try {
             const x = list2[+b.dataset.i];
             const r = await fetch("packs/" + encodeURIComponent(x.file));
-            if (!r.ok) throw new Error("パックを取得できませんでした。");
+            if (!r.ok) throw new Error("出題データを取得できませんでした。");
             done(importPack(await r.json(), x.file));
           } catch (e) {
             fail(e);
@@ -1550,7 +1555,7 @@ input[type="date"] {
       `${cur.replace(/[\\/:*?"<>|]/g, "")}_${P.length}問_${stamp()}.json`,
       text
     );
-    out.textContent = r === "ok" ? `問題パック（${P.length}問）を保存しました。成績は含まれません。` : r === "declined" ? "保存をやめました。" : "保存できませんでした。もう一度お試しください。";
+    out.textContent = r === "ok" ? `出題データ（${P.length}問）を保存しました。成績は含まれません。` : r === "declined" ? "保存をやめました。" : "保存できませんでした。もう一度お試しください。";
   }
   function domainPlan(exam, N) {
     if (!exam || !exam.d) return Array(N).fill("全般");
@@ -1824,7 +1829,7 @@ input[type="date"] {
   function start(n, m, p) {
     const P = rangePool();
     if (!P.length) {
-      $("#pc").textContent = "問題がありません。ページ下の「設定」から、問題パックを読み込んでください。";
+      $("#pc").textContent = "問題がありません。ページ下の「出題データ」で、ファイルを読み込んでください。";
       return;
     }
     const qs = (S.rnd ? shuffled(P) : P.slice()).slice(0, Math.max(1, n || 60)).map(present);
